@@ -1,0 +1,13 @@
+.itemMenu {
+    color: white;
+    background-color: #005b96;
+}
+
+.itemMenu:hover {
+    color: white;
+    background-color: #6497b1;  
+}
+
+.boton {
+    color: white;
+}
