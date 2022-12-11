@@ -16,9 +16,39 @@ const SECONDARY = {
     contrastText: '#000000',
 };
 
+const ERROR = {
+    lighter: '#fe8181',
+    light: '#fe5757',    
+    main: '#fe2e2e',
+    dark: '#cb2424',
+    darker: '#b62020',
+    contrastText: '#000000',
+};
+
+const SUCCESS = {
+    lighter: '#aefe57',
+    light: '#9afe2e',    
+    main: '#8ae429',
+    dark: '#6bb120',
+    darker: '#4d7f17',
+    contrastText: '#000000',
+};
+
+const WARNING = {
+    lighter: '#fefffc',
+    light: '#fbfd9e',
+    main: '#f9e909',
+    dark: '#fdf25d',
+    darker: '#f9e909',
+    contrastText: '#000000',
+};
+
 const palette = {
     primary : { ...PRIMARY },
-    secondary : { ...SECONDARY }
+    secondary : { ...SECONDARY },
+    error : { ...ERROR },
+    success : { ...SUCCESS },
+    warning : {...WARNING}
 };
 
 export default palette;

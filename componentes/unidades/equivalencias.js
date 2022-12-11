@@ -33,7 +33,6 @@ const Equivalencias = ({leyenda, unidad, setUnidad, mostrar}) => {
     //(es la posición en el vector de equivalencias de la equivalencia a editar)
     
     const { equivalencias } = unidad;
-    
     //se ejecuta al seleccionar el botón que permite definir una nueva equivalencia (+)
     const fabHandler = () => {
         setNombreUnidadEquivalencia(null);
@@ -54,7 +53,7 @@ const Equivalencias = ({leyenda, unidad, setUnidad, mostrar}) => {
     //posición: es la posición de la equivalencia a editar en el vector de equivalencias 
     const handleEditar = (posicion) => {
         setEdicion(true);
-        setNombreUnidadEquivalencia(obtenerNombreUnidad(equivalencias[posicion].idUnidad, unidades));        
+        setNombreUnidadEquivalencia(obtenerNombreUnidad(equivalencias[posicion]._id, unidades));        
         setProporcion(equivalencias[posicion].proporcion);
         //sólo se puede editar la proporción
         setEquivalenciaAEditar(posicion);
@@ -101,7 +100,7 @@ const Equivalencias = ({leyenda, unidad, setUnidad, mostrar}) => {
                                                             <GoTrashcan />
                                                         </IconButton>
                                                     </TableCell>
-                                                    <TableCell align = 'left' sx = {{width : 300}}>{obtenerNombreUnidad(equivalencia.idUnidad, unidades)}</TableCell>
+                                                    <TableCell align = 'left' sx = {{width : 300}}>{obtenerNombreUnidad(equivalencia._id, unidades)}</TableCell>
                                                     <TableCell align = 'right' >{equivalencia.proporcion}</TableCell>
                                                 </TableRow>
                                             ))

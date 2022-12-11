@@ -1,22 +1,23 @@
 //Funciones auxiliares y constantes para el manejo de las unidades
-//Todas las funciones trabajan sobre el vector en memoria con las unidades
+//Todas estas funciones trabajan sobre el vector en memoria con las unidades
 
-//dado un idUnidad, devuelve su nombre
-const obtenerNombreUnidad = (idUnidad, unidades) => {
+//dado un _id, devuelve su nombre
+//Si no hay ninguna unidad con el _id especificado, devuelve INDEFINIDA
+const obtenerNombreUnidad = (_id, unidades) => {
     for (let i in unidades) {
-        if (unidades[i].idUnidad === idUnidad)
+        if (unidades[i]._id === _id)
             return unidades[i].nombre
     }
-    return 'indefinida';
+    return constantes.INDEFINIDA;
 }
 
-//dado el nombre de una unidad, devuelve el idUnidad
+//dado el nombre de una unidad, devuelve el _id
 //si no se encuentra una unidad con el nombre especificado, o si el mismo es nulo, devuelve -1
-const obtenerIdUnidad = (nombre, unidades) => {
+const obtener_Id = (nombre, unidades) => {
     if (nombre && nombre.trim() !== '') {
         for (let i in unidades) {
             if (unidades[i].nombre.toLowerCase() === nombre.trim().toLowerCase())
-                return unidades[i].idUnidad;
+                return unidades[i]._id;
         }
         return -1;
     }
@@ -29,7 +30,7 @@ const obtenerIdUnidad = (nombre, unidades) => {
 //a este método lo usa obtenerUnidadesParaEquivalencia
 const obtenerPosicion = (unidadReferencia, unidades) => {
     return unidades.findIndex(unidad => 
-        unidad.idUnidad === unidadReferencia.idUnidad
+        unidad._id === unidadReferencia._id
     );
 }
 
@@ -43,7 +44,7 @@ const obtenerUnidadesParaEquivalencia = (unidadReferencia, unidades) => {
         const unidad = unidades[i];
         if (unidadReferencia.nombre.trim() !== unidad.nombre) {
             restoUnidades.push({
-                idUnidad : unidad.idUnidad,
+                _id : unidad._id,
                 nombre : unidad.nombre
             });
         }
@@ -63,22 +64,22 @@ const obtenerUnidadesParaEquivalencia = (unidadReferencia, unidades) => {
     return restoUnidades;
 }
 
-//Dados el idUnidad, el nombre de una unidad y la lista de unidades, devuelve true o false según exista otra unidad con el mismo nombre
-//Se puede usar cuando se está creando una unidad (idUnidad sin definir) o cuando se está modificando una unidad (idUnidad definido)
+//Dados el _id, el nombre de una unidad y la lista de unidades, devuelve true o false según exista otra unidad con el mismo nombre
+//Se puede usar cuando se está creando una unidad (_id sin definir) o cuando se está modificando una unidad (_id definido)
 //nombreUnidad: nombre de la unidad
 //unidades: lista de unidades
-//idUnidad: sin definir cuando se está creando una unidad, definido cuando se está modificando una unidad
+//_id: sin definir cuando se está creando una unidad, definido cuando se está modificando una unidad
 //a este método se lo usa para evitar unidades con el mismo nombre cuando se está modificando una unidad
-const existeUnidad = (nombreUnidad, unidades, idUnidad) => {    
+const existeUnidad = (nombreUnidad, unidades, _id) => {    
     let posicion; 
-    if (idUnidad === undefined) { //creación de unidad
+    if (_id === undefined) { //creación de unidad
         posicion =  unidades.findIndex(unidad => 
             unidad.nombre.toLowerCase() === nombreUnidad.toLowerCase() 
         );
     }
     else { //modificación de unidad
         posicion =  unidades.findIndex(unidad => 
-            unidad.idUnidad !== idUnidad && unidad.nombre.toLowerCase() === nombreUnidad.toLowerCase() 
+            unidad._id !== _id && unidad.nombre.toLowerCase() === nombreUnidad.toLowerCase() 
         );
     }
     return posicion !== -1 ? true : false;
@@ -94,24 +95,18 @@ const esProporcionValida = (proporcion) => {
     }
 }
 
-//dado un idUnidad, devuelve la unidad correspondiente
-//si no encuentra la unidad para el idUnidad especificado, devuelve 'indefinida'
-// const obtenerUnidad = (idUnidad, unidades) => {
-//     const unidad = unidades.find(unidad => unidad.idUnidad === idUnidad);
-//     return unidad === undefined ? 'indefinida' : unidad;    
-// }
 
 //Actualiza la equivalencia correspondiente
 //Por ejemplo, se tiene la unidad "grs" (sin equivalencias) 
 //y se crea la unidad "Kg" con la equivalencia de 1000 "grs"
 //entones a la unidad "grs" se le agrega la equivalencia de 1/1000 "Kg"
 //unidad: sería el objeto unidad correspondiente a la unidad "grs"
-//idUnidadEquivalente: sería el idUnidad de "Kg"
-const actualizarEquivalenciaCorrespondiente = (unidad, idUnidadEquivalente) => {
+//_idUnidadEquivalente: sería el _id de "Kg"
+const actualizarEquivalenciaCorrespondiente = (unidad, _idUnidadEquivalente) => {
     let equivalenciasUpdate = [...unidad.equivalencias];
     let posEquivalenciaAActualizar = -1;
     for(let i in unidad.equivalencias) {
-        if (unidad.equivalencias[i].idUnidad === idUnidadEquivalente) {
+        if (unidad.equivalencias[i]._id === _idUnidadEquivalente) {
             posEquivalenciaAActualizar = i;
             break;
         }
@@ -121,75 +116,13 @@ const actualizarEquivalenciaCorrespondiente = (unidad, idUnidadEquivalente) => {
     }
     else { //no tiene esa equivalencia => agregarla
         equivalenciasUpdate.push({
-            idUnidad : idUnidadEquivalente,
+            _id : _idUnidadEquivalente,
             proporcion : unidad.propEquivalente
         })
     }
     unidad.equivalencias = equivalenciasUpdate;
     return unidad;
 }
-
-
-
-//obtiene todas las unidades
-// const obtenerUnidades = async () => {
-//     const ruta = '/api/unidades';
-//     const respuesta = await axios.get('/api/unidades');
-//     const unidades = await respuesta.data.unidades;
-
-    // const unidades = [
-    //     {
-    //         idUnidad : 1,
-    //         nombre : 'Kg',
-    //         equivalencias : [
-    //             {
-    //                 idUnidad : 2,
-    //                 proporcion : 1000
-    //             },
-    //             {
-    //                 idUnidad : 3,
-    //                 proporcion : 30
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         idUnidad : 2,
-    //         nombre : 'grs',
-    //         equivalencias : [
-    //             {
-    //                 idUnidad : 1,
-    //                 proporcion : 0.001
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         idUnidad : 3,
-    //         nombre : 'Cuchara 1/2 TBSP',
-    //         equivalencias : [
-    //             {
-    //                 idUnidad : 2,
-    //                 proporcion : 100
-    //             },
-    //             {
-    //                 idUnidad : 4,
-    //                 proporcion : 7.4
-    //             },            
-    //         ]
-    //     },
-    //     {
-    //         idUnidad : 4,
-    //         nombre : 'ml',
-    //         equivalencias : [
-    //             {
-    //                 idUnidad : 3,
-    //                 proporcion : 0.135
-    //             }            
-    //         ]
-    //     }                            
-    // ];
-
-//     return unidades;
-// }
 
 const constantes = {
     TITULO_APLICACION : 'Panes Negrita',
@@ -202,6 +135,7 @@ const constantes = {
     ERROR_LEER_UNIDADES : 'Error al leer las unidades',
     ERROR_CREAR_INDICE : 'Error al crear el índice',
     ERROR_ACTUALIZAR_UNIDAD : 'Error al actualizar una unidad',
+    INDEFINIDA : 'indefinida',
     CONEXION_EXITOSA : 'Conexión exitosa',
     UNIDADES : 'Unidades',
     UNIDADES_POR_PAGINA: 'Unidades por página',
@@ -227,7 +161,7 @@ const constantes = {
 
 export {
     obtenerNombreUnidad,
-    obtenerIdUnidad,
+    obtener_Id,
     obtenerUnidadesParaEquivalencia,
     esProporcionValida,    
     existeUnidad,

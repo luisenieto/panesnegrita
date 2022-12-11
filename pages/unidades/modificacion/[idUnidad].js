@@ -1,17 +1,17 @@
 import { useRouter } from "next/router";
 import { Container, Paper, Grid, Button } from '@mui/material';
-import EtiquetaTitulo from "../../../componentes/unidades/etiquetaTitulo";
-import EtiquetaEstado from "../../../componentes/unidades/etiquetaEstado";
+import EtiquetaTitulo from "../../../componentes/comunes/etiquetaTitulo";
+import EtiquetaEstado from "../../../componentes/comunes/etiquetaEstado";
 import CampoUnidad from "../../../componentes/unidades/campoUnidad";
 import Equivalencias from "../../../componentes/unidades/equivalencias";
 import { useState, useContext, useEffect } from 'react';
 import { ProveedorContexto } from "../../../contexto/proveedor";
-import { existeUnidad } from "../../../auxiliares/auxiliaresUnidades";
 import { useTheme } from "@emotion/react";
 import { constantes } from "../../../auxiliares/auxiliaresUnidades";
 import MensajeInformativo from '../../../componentes/unidades/mensajeInformativo';
-import { obtenerUnidadParaModificar } from "../../api/unidades/bdauxiliares";
+import { obtenerUnidadParaModificar } from "../../api/unidades/bdAuxiliares";
 import axios from 'axios';
+import { ObjectId } from 'mongodb';
 
 //Componente que permite modificar una unidad
 const ModificacionUnidad = (props) => {        
@@ -21,9 +21,10 @@ const ModificacionUnidad = (props) => {
     const tema = useTheme();
       
     const [unidadAModificar, setUnidadAModificar] = useState(props.unidad);    
-    //unidadAModificar es la unidad que se está modificando         
-    
+    //unidadAModificar es la unidad que se está modificando       
+    //unidadAModificar._id es String
     const unidades = props.unidades;
+    //los _id son String
 
     useEffect(() => {
         if (unidades)
@@ -56,44 +57,34 @@ const ModificacionUnidad = (props) => {
 
     //se ejecuta cuando se selecciona Aceptar
     const handleAceptar = async () => {
-        if (existeUnidad(unidadAModificar.nombre.trim(), unidades, unidadAModificar.idUnidad)) {
-            setMensaje({
-                gravedad : 'error',
-                titulo : constantes.ERROR,
-                texto : constantes.UNIDAD_REPETIDA,
-                mostrar : true
-            })
-        }
-        else {
-            const ruta = '/api/unidades/';
-            try {
-                const respuesta = await axios.post(ruta, {...unidadAModificar, operacion : 'M' });
-                const data = await respuesta.data;
-                if (data.mensaje === constantes.UNIDAD_MODIFICADA) {
-                    setMensaje({
-                        gravedad : 'success',
-                        titulo : constantes.MODIFICACION_UNIDAD,
-                        texto : data.mensaje,
-                        mostrar : true
-                    });
-                }
-                else {
-                    setMensaje({
-                        gravedad : 'error',
-                        titulo : constantes.MODIFICACION_UNIDAD,
-                        texto : data.mensaje,
-                        mostrar : true
-                    });                    
-                }
+        const ruta = '/api/unidades/';
+        try {                
+            const respuesta = await axios.post(ruta, {...unidadAModificar, operacion : 'M' });
+            const data = await respuesta.data;
+            if (data.mensaje === constantes.UNIDAD_MODIFICADA) {
+                setMensaje({
+                    gravedad : 'success',
+                    titulo : constantes.MODIFICACION_UNIDAD,
+                    texto : data.mensaje,
+                    mostrar : true
+                });
             }
-            catch(error) {
+            else {
                 setMensaje({
                     gravedad : 'error',
-                    titulo : 'Error',
-                    texto : error.response.data.mensaje || error.message,
+                    titulo : constantes.MODIFICACION_UNIDAD,
+                    texto : data.mensaje,
                     mostrar : true
-                }); 
+                });                    
             }
+        }
+        catch(error) {
+            setMensaje({
+                gravedad : 'error',
+                titulo : 'Error',
+                texto : error.response.data.mensaje || error.message,
+                mostrar : true
+            }); 
         }
     }
 
@@ -155,10 +146,11 @@ const ModificacionUnidad = (props) => {
     )    
 }
 
-export const getServerSideProps = async (contexto) => { 
+export const getServerSideProps = async (contexto) => {     
     const { params } = contexto;
-    const idUnidad = parseInt(params.idUnidad);
-    const resultadoObtenerUnidad = await obtenerUnidadParaModificar(idUnidad); 
+    const _id = new ObjectId(params.idUnidad);
+    //params.idUnidad es String
+    const resultadoObtenerUnidad = await obtenerUnidadParaModificar(_id);        
     return {
         props : {    
             mensaje : resultadoObtenerUnidad.mensaje,
@@ -168,27 +160,5 @@ export const getServerSideProps = async (contexto) => {
     }    
 }
 
-// export const getStaticPaths = async () => {
-//     return {
-//         paths : [
-//             {
-//                 params : {
-//                     idUnidad : '1'
-//                 }
-//             },
-//             {
-//                 params : {
-//                     idUnidad : '2'
-//                 }
-//             },
-//             {
-//                 params : {
-//                     idUnidad : '3'
-//                 }
-//             }                        
-//         ],
-//         fallback : 'blocking'
-//     }
-// }
 
 export default ModificacionUnidad;

@@ -7,15 +7,33 @@ const Proveedor = ({ children }) => {
     const [unidades, setUnidades] = useState([]);
     //lista de todas las unidades
 
+    const [ingredientes, setIngredientes] = useState([]);
+    //lista de todos los ingredientes
+
     const [unidadABorrar, setUnidadABorrar] = useState(null);
     //unidad que se está por borrar (sirve para el popup que borra una unidad)
+
+    const [ingredienteABorrar, setIngredienteABorrar] = useState(null);
+    //ingrediente que se está por borrar (sirve para el popup que borra un ingrediente)
+
+    const [redirigirA, setRedirigirA] = useState(null);
+    //sirve para redirigir a una página en particular
+    //Por ejemplo, sin estar logueado se quiere crear una unidad
+    //entonces se muestra el formulario para loguearse
+    //si el proceso de logueo es exitoso se redirige a la página que permite crear la unidad
 
     return (
         <ProveedorContexto.Provider value = {{
             unidades, 
             setUnidades,
+            ingredientes, 
+            setIngredientes,
             unidadABorrar, 
-            setUnidadABorrar
+            setUnidadABorrar,
+            ingredienteABorrar, 
+            setIngredienteABorrar,
+            redirigirA, 
+            setRedirigirA
         }}>
             {children}
         </ProveedorContexto.Provider>

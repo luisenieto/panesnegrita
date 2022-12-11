@@ -9,7 +9,8 @@ const CampoUnidad = ({leyenda, unidad, setUnidad, mostrar}) => {
                 id = {leyenda}
                 name = {leyenda}
                 label = {leyenda}
-                fullWidth                
+                fullWidth    
+                autoFocus = {true}            
                 variant = "standard"
                 value = {unidad.nombre === '' ? '' : unidad.nombre}
                 inputProps = {

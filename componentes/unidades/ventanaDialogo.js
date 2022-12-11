@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, Box, FormControl, DialogActions, Button } from '@mui/material';
 import AutoCompletarUnidad from '../../componentes/unidades/autoCompletarUnidad';
 import CampoProporcion from '../../componentes/unidades/campoProporcion';
-import { obtenerIdUnidad, esProporcionValida } from '../../auxiliares/auxiliaresUnidades';
+import { obtener_Id, esProporcionValida } from '../../auxiliares/auxiliaresUnidades';
 import { useTheme } from '@emotion/react';
 import { useContext } from 'react';
 import { ProveedorContexto } from '../../contexto/proveedor';
@@ -32,7 +32,7 @@ const VentanaDialogo = ({visible, setVisible, unidad, setUnidad, nombreUnidadEqu
         let equivalenciasUpate = [...unidad.equivalencias];
         if (!edicion) { //se está definiendo una nueva equivalencia            
             const nuevaEquivalencia = {
-                idUnidad : obtenerIdUnidad(nombreUnidadEquivalencia, unidades),
+                _id : obtener_Id(nombreUnidadEquivalencia, unidades),
                 proporcion
             }
             equivalenciasUpate.push(nuevaEquivalencia);

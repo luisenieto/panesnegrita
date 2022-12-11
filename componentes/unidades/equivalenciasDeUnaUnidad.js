@@ -22,7 +22,7 @@ const EquivalenciasDeUnaUnidad = ({abierto, equivalencias}) => {
                                                 <Collapse in = {abierto} timeout = 'auto' unmountOnExit >
                                                     <Box  >
                                                         <Typography sx = {{paddingLeft : 20}} variant = 'body1' gutterBottom component = 'div'>
-                                                            {equivalencia.proporcion} {obtenerNombreUnidad(equivalencia.idUnidad, unidades)}
+                                                            {equivalencia.proporcion} {obtenerNombreUnidad(equivalencia._id, unidades)}
                                                         </Typography>
                                                     </Box>
                                                 </Collapse>

@@ -7,21 +7,23 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useContext } from 'react';
 import { ProveedorContexto } from '../../contexto/proveedor';
 import { constantes } from '../../auxiliares/auxiliaresUnidades';
-import { obtenerUnidades } from '../api/unidades/bdauxiliares';
+import { obtenerUnidades } from '../api/unidades/bdAuxiliares';
 import Popup from '../../componentes/unidades/popup';
 
 //componente que muestra las unidades definidas
 const Unidades = (props) => {    
     const unidades = props.unidades;
-
-    const { setUnidades } = useContext(ProveedorContexto);
+    //los _id se guardan como cadena
+    
+    const { setUnidades, setRedirigirA } = useContext(ProveedorContexto);
     
     useEffect(() => {
         if (unidades)
             setUnidades(unidades);
     }, []); //eslint-disable-line react-hooks/exhaustive-deps 
     //el comentario anterior es para que en la consola no aparezca el warning diciendo que el array de depdencias de useEffect está vacío
-
+    //se cargan en memoria las unidades. Esto le sirve a componentes como Equivalencia por ejemplo
+    
     const [mensaje, setMensaje] = useState(
         props.mensaje === constantes.UNIDADES_LEIDAS_CORRECTAMENTE ?
             {
@@ -34,7 +36,7 @@ const Unidades = (props) => {
             {
                 gravedad : 'error',
                 titulo : constantes.ERROR,
-                texto : props.mensaje,
+                texto : props.mensaje || constantes.ERROR_LEER_UNIDADES,
                 mostrar : true
             }
     );
@@ -103,6 +105,7 @@ const Unidades = (props) => {
                                         texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
                                         openPopup = {openPopup}
                                         setearOpenPopup = {setearOpenPopup}
+                                        setMensaje = {setMensaje}
                                     />
                                 </>                                
                             :
@@ -125,7 +128,8 @@ const Unidades = (props) => {
                                     marginLeft : '0px',
                                     padding : '20px 5px',
                                 }}
-                                onClick = { () => {                        
+                                onClick = { () => {  
+                                    setRedirigirA('/unidades/nueva');                      
                                     router.push('/unidades/nueva');
                                 }}
                             >
@@ -139,8 +143,7 @@ const Unidades = (props) => {
 }
 
 export const getServerSideProps = async () => {
-    const resultadoObtenerUnidades = await obtenerUnidades();    
-    
+    const resultadoObtenerUnidades = await obtenerUnidades();  
     //getServerSideProps() se ejecuta en el servidor
     //Si se hiciera una llamada a la API (interna), la misma también se ejecuta en el servidor
     //con lo cual se estaría haciendo un pedido del servidor a él mismo (no tiene sentido)
@@ -152,10 +155,13 @@ export const getServerSideProps = async () => {
             mensaje : resultadoObtenerUnidades.mensaje                
         }
     }
-    //getServerSideProps() tiene un problema al serializar los datos
+    //getServerSideProps() tiene un problema al serializar el tipo de datos ObjectId de Mongo
     //Hay un hilo en GitHub al respecto (https://github.com/vercel/next.js/issues/11993)
-    //Para solucionar este problema se puede usar stringify() y luego parse()
+    //Para solucionar esto se puede usar stringify() y luego parse()
     //Esta información la saqué de https://www.mongodb.com/developer/languages/javascript/nextjs-with-mongodb/
+    //Lo que hay que tener en cuenta es que al usar stringify() se convierte a cadena el tipo ObjectId
+    //En memoria, los _id van a estar como cadenas (hay que tener en cuenta esto para las comparaciones por ejemplo)
+    //Luego, para operaciones que interactúen con la BD hay que transformarlo a ObjectId
 }
 
 export default Unidades;
