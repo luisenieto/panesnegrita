@@ -152,7 +152,13 @@ export const getServerSideProps = async () => {
             mensaje : resultadoObtenerIngredientes.mensaje                
         }
     }    
-    
+    //getServerSideProps() tiene un problema al serializar el tipo de datos ObjectId de Mongo
+    //Hay un hilo en GitHub al respecto (https://github.com/vercel/next.js/issues/11993)
+    //Para solucionar esto se puede usar stringify() y luego parse()
+    //Esta información la saqué de https://www.mongodb.com/developer/languages/javascript/nextjs-with-mongodb/
+    //Lo que hay que tener en cuenta es que al usar stringify() se convierte a cadena el tipo ObjectId
+    //En memoria, los _id van a estar como cadenas (hay que tener en cuenta esto para las comparaciones por ejemplo)
+    //Luego, para operaciones que interactúen con la BD hay que transformarlo a ObjectId
 }
 
 export default Ingredientes;

@@ -36,7 +36,7 @@ export const obtenerIngredientes = async () => {
         }
     }
     else { //no se pudo establecer la conexión
-        return {...resultadoObtenerUnidades, mensaje : constantesUnidades.ERROR_CONEXION};
+        return {...resultadoObtenerIngredientes, mensaje : constantesUnidades.ERROR_CONEXION};
     }
     
 }

@@ -13,16 +13,16 @@ const Pedidos = (props) => {
 
     //cada vez que cambie imagenSeleccionada (objeto del tipo File)
     //se obtiene la URL del mismo mediante el método createObjectURL
-    useEffect(() => {
-        if (imagenSeleccionada) {
-            //setURLImagen(URL.createObjectURL(imagenSeleccionada));
-            const fileReader = new FileReader();
-            fileReader.onload = function(evento) {
-                setImagen(evento.target.result);
-            }
-            fileReader.readAsDataURL(imagenSeleccionada);
-        }
-    }, [imagenSeleccionada]);
+    // useEffect(() => {
+    //     if (imagenSeleccionada) {
+    //         //setURLImagen(URL.createObjectURL(imagenSeleccionada));
+    //         const fileReader = new FileReader();
+    //         fileReader.onload = function(evento) {
+    //             setImagen(evento.target.result);
+    //         }
+    //         fileReader.readAsDataURL(imagenSeleccionada);
+    //     }
+    // }, [imagenSeleccionada]);
 
     const handleImage = async (evento) => {
         const archivo = evento.target.files[0];
@@ -51,7 +51,9 @@ const Pedidos = (props) => {
         }
     }
 
+    console.log(imagen);
     return (
+        
         //el atributo hidden de input oculta el botón y campo de texto del componente
         //el atributo accept con el valor 'image/*' permite seleccionar sólo archivos de imágenes
         //si se quisiera poder seleccionar varios archivos, se puede agregar el atributo multiple
