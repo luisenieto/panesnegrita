@@ -40,7 +40,11 @@ const WARNING = {
     main: '#f9e909',
     dark: '#fdf25d',
     darker: '#f9e909',
-    contrastText: '#000000',
+    contrastText: '#ffffff',
+};
+
+const TEXTO = {
+    main: '#828282',
 };
 
 const palette = {
@@ -48,7 +52,8 @@ const palette = {
     secondary : { ...SECONDARY },
     error : { ...ERROR },
     success : { ...SUCCESS },
-    warning : {...WARNING}
+    warning : {...WARNING},
+    texto : {...TEXTO}
 };
 
 export default palette;

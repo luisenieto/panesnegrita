@@ -235,7 +235,7 @@ export const obtenerIngredienteParaModificar = async (_id) => {
         }
     }
     else { //no se pudo establecer la conexión
-        return {...resultadoObtenerUnidad, mensaje : constantesUnidades.ERROR_CONEXION};
+        return {...resultadoObtenerIngrediente, mensaje : constantesUnidades.ERROR_CONEXION};
     }
 }
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Container, Paper, Grid, Typography } from '@mui/material';
 import DetalleCliente from '../../../componentes/clientes/detalleCliente';
-//import FotoCliente from '../../../componentes/clientes/fotoCliente';
+import FotoCliente from '../../../componentes/clientes/fotoCliente';
 import EtiquetaTitulo from '../../../componentes/comunes/etiquetaTitulo';
 import EtiquetaEstado from '../../../componentes/comunes/etiquetaEstado';
 import { constantes } from '../../../auxiliares/auxiliaresClientes';
@@ -11,17 +11,15 @@ import CampoReferencia from '../../../componentes/clientes/campoReferencia';
 import CampoTelefono from '../../../componentes/clientes/campoTelefono';
 import CampoCorreo from '../../../componentes/clientes/campoCorreo';
 import CampoFechaNacimiento from '../../../componentes/clientes/campoFechaNacimiento';
-//import Foto from '../../../componentes/clientes/foto';
+import Foto from '../../../componentes/productos/foto';
 import Botones from '../../../componentes/clientes/botones';
 import MensajeInformativo from '../../../componentes/comunes/mensajeInformativo';
-import { controlarSiSeEstaLogueado } from '../../../lib/auth';
-import { MdImportExport } from 'react-icons/md';
 
 //Componente que permite crear un cliente nuevo
 const NuevoCliente = () => {
     const [nuevoCliente, setNuevoCliente ] = useState({
         //el _id lo genera MongoDB
-        //foto : null,
+        foto : null,
         nombre : '',
         apellido : '',
         referencia : '',
@@ -30,17 +28,7 @@ const NuevoCliente = () => {
         fechaNacimiento : null,
         pedidos : []
     });
-    //nuevoClinte es el cliente que se está creando    
-    // pedidos = [
-    //     {
-    //         _id 
-    //         idProducto
-    //         nombre
-    //         cantidad
-    //         importe 
-    //         estado ['pedido' || 'en elaboración' || 'terminado' ]
-    //     }
-    // ]
+    //nuevoIngrediente es el ingrediente que se está creando    
 
     const [mensaje, setMensaje] = useState({
         gravedad : 'error',
@@ -50,7 +38,7 @@ const NuevoCliente = () => {
     });
     //controla el componente MensajeInformativo
 
-    //const [avatars, setAvatars] = useState([]);
+    const [avatars, setAvatars] = useState([]);
     //contiene el nombre de todos los avatars que se pudieran elegir para un cliente
 
 
@@ -60,12 +48,12 @@ const NuevoCliente = () => {
                 <EtiquetaTitulo leyenda = {constantes.CLIENTES} />
                 <EtiquetaEstado leyenda = {constantes.NUEVO_CLIENTE} />
                 <Grid container spacing = {2}>  
-                    {/* <Foto      
+                    <Foto      
                         cliente = {nuevoCliente}  
                         setCliente = {setNuevoCliente} 
                         avatars = {avatars}
                         setAvatars = {setAvatars}            
-                    /> */}
+                    />
                     <CampoNombre 
                         leyenda = {constantes.NOMBRE}
                         cliente = {nuevoCliente} 
@@ -110,18 +98,42 @@ const NuevoCliente = () => {
                     <Botones 
                         mostrar = {mensaje.mostrar}
                         cliente = {nuevoCliente}
-                        setMensaje = {setMensaje}                        
+                        setMensaje = {setMensaje}
+                        avatars = {avatars}
+                        setAvatars = {setAvatars}
                         operacion = 'A'
                     />
                 </Grid>
             </Paper>
-        </Container>        
+        </Container>
+
+
+
+        // <Box component="main" sx={{ flexGrow: 1, py: 8 }} >
+        //     <Container component = "main"  sx = {{ mb: 4 }}>
+        //     {/* <Container maxWidth = "lg"> */}
+        //         <Typography sx = {{ mb: 3 }} variant = "h4">
+        //             Cliente
+        //         </Typography>
+        //         <Grid container spacing = {2}>
+        //             <Grid item lg = {8} md = {6} xs = {12}>
+        //                 <DetalleCliente />
+        //             </Grid>
+        //         </Grid>
+        //     </Container>
+        // </Box>
     )
 }
 
-//No se puede crear un cliente sin estar logueado
-export const getServerSideProps = async (contexto) => {
-    return await controlarSiSeEstaLogueado(contexto.req);
-}
+// export const getServerSideProps = () => {
+//     console.log('getServerSideProps');
+//     existeArchivo();    
+
+//     return {
+//         props : {
+//             existeArchivo : null
+//         }
+//     }
+// }
 
 export default NuevoCliente;

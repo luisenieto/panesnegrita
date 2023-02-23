@@ -2,7 +2,7 @@
 import { constantes as constantesIngredientes} from "../../../auxiliares/auxiliaresIngredientes";
 import { constantes as constantesUnidades } from "../../../auxiliares/auxiliaresUnidades";
 import { ObjectId } from 'mongodb';
-import { agregarIngrediente, modificarIngrediente, borrarIngrediente } from "./bdAuxiliares";
+import { obtenerIngredientes, agregarIngrediente, modificarIngrediente, borrarIngrediente } from "./bdAuxiliares";
 
 //api para el manejo de ingredientes
 const handler = async (request, response) => {

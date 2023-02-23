@@ -10,6 +10,9 @@ const Proveedor = ({ children }) => {
     const [ingredientes, setIngredientes] = useState([]);
     //lista de todos los ingredientes
 
+    const [clientes, setClientes] = useState([]);
+    //lista de todos los clientes
+
     const [unidadABorrar, setUnidadABorrar] = useState(null);
     //unidad que se está por borrar (sirve para el popup que borra una unidad)
 
@@ -28,6 +31,8 @@ const Proveedor = ({ children }) => {
             setUnidades,
             ingredientes, 
             setIngredientes,
+            clientes, 
+            setClientes,
             unidadABorrar, 
             setUnidadABorrar,
             ingredienteABorrar, 

@@ -1,9 +1,9 @@
 import { Grid, TextField } from '@mui/material';
 
-//Componente que muestra el campo de texto (nombre) para crear/modificar un ingrediente
-const CampoNombre = ({leyenda, ingrediente, setIngrediente, mostrar}) => {
+//Componente que muestra el campo de texto (descripción) para crear/modificar un producto
+const CampoDescripcion = ({leyenda, producto, setProducto, mostrar}) => {
     return (
-        <Grid item lg = {12} sm = {12} xs = {12}>
+        <Grid item lg = {6} sm = {12} xs = {12}>
             <TextField
                 required
                 id = {leyenda}
@@ -12,16 +12,16 @@ const CampoNombre = ({leyenda, ingrediente, setIngrediente, mostrar}) => {
                 fullWidth    
                 autoFocus = {true}            
                 variant = "outlined"
-                value = {ingrediente.nombre === '' ? '' : ingrediente.nombre}
+                value = {producto.descripcion === '' ? '' : producto.descripcion}
                 inputProps = {
                     {
                         disabled : mostrar
                     }
                 }
-                onChange = {evento => setIngrediente({...ingrediente, 'nombre' : evento.target.value})}
+                onChange = {evento => setProducto({...producto, 'descripcion' : evento.target.value.trim()})}
             />
         </Grid>
     )
 }
 
-export default CampoNombre;
+export default CampoDescripcion;

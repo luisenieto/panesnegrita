@@ -1,41 +1,127 @@
 import { obtenerClientes } from "../api/clientes/bdAuxiliares";
-import { Container, Stack, Grid, Typography } from "@mui/material";
+import { Grid, TableContainer, Table, Card, Button } from '@mui/material';
+import { useState, useEffect, useContext } from 'react';
+import { ProveedorContexto } from "../../contexto/proveedor";
+import { useRouter } from 'next/router';
 import { constantes } from "../../auxiliares/auxiliaresClientes";
-import Cliente from "../../componentes/clientes/cliente";
+import CabeceraTabla from "../../componentes/clientes/cabeceraTabla";
+import CuerpoTabla from "../../componentes/clientes/cuerpoTabla";
+import PaginacionTabla from "../../componentes/clientes/paginacionTabla";
 
+//Componente que muestra todos los clientes
 const Clientes = (props) => {    
+    const { setClientes, setRedirigirA } = useContext(ProveedorContexto); 
+    const router = useRouter(); 
+
     const clientes = props.clientes;
     //los _id se guardan como cadena
 
+    useEffect(() => {
+        if (clientes)
+            setClientes(clientes);
+    }, []); //eslint-disable-line react-hooks/exhaustive-deps 
+    //el comentario anterior es para que en la consola no aparezca el warning diciendo que el array de depdencias de useEffect está vacío
+    //se cargan en memoria los clientes. Esto le sirve a componentes como ... por ejemplo
+
+    const ordenarPor = 'nombre';
+    //sólo se pueden ordenar los ingredientes por su nombre
+
+    const [orden, setearOrden] = useState('asc');
+    //por defecto, los clientes se ordenan alfabéticamente
+
+    //configura el criterio de ordenamiento en asc o desc para ordenar los ingredientes
+    const configurarOrdenamiento = () => {
+        setearOrden(orden === 'asc' ? 'desc' : 'asc');
+    }
+
+    const [pagina, setearPagina] = useState(0);
+    //para saber en qué página se está (empieza en la 0)
+
+    const [filasPorPagina, setearFilasPorPagina] = useState(10);
+    //por defecto se muestran 10 clientes por página
+
+    const [openPopup, setearOpenPopup] = useState(false);
+    //controla la visibilidad del popup (pregunta si se confirma el borrado del ingrediente)
+
+    /* const [mensaje, setMensaje] = useState(
+        props.mensaje === constantes.INGREDIENTES_LEIDOS_CORRECTAMENTE ?
+            {
+                gravedad : 'error',
+                titulo : '',
+                texto : '',
+                mostrar : false
+            }
+        :
+            {
+                gravedad : 'error',
+                titulo : constantes.ERROR,
+                texto : props.mensaje || constantes.ERROR_LEER_INGREDIENTES,
+                mostrar : true
+            }
+    ); */
+    //controla el componente MensajeInformativo
+
     return (
-        <Container>
-            <Typography variant = "h4" sx = {{ mb: 3, mt: 5 }}>
-                {constantes.CLIENTES}
-            </Typography>
-
-            <Stack direction = "row" flexWrap = "wrap-reverse" alignItems = "center" justifyContent = "flex-end" sx = {{ mb: 5 }}>
-                <Stack direction = "row" spacing = {1} flexShrink = {0} sx = {{ my: 1 }}>
-                    {/* <ProductFilterSidebar
-                        openFilter={openFilter}
-                        onOpenFilter={handleOpenFilter}
-                        onCloseFilter={handleCloseFilter}
-                    /> */}
-                    {/* <ProductSort /> */}
-                </Stack>
-            </Stack>
-
-            <Grid container spacing = {3}>
-                {
-                    clientes.map(cliente => {
-                        return (
-                            <Grid key = {cliente._id} item xs = {6} sm = {6} md = {3}>
-                                <Cliente cliente = {cliente} />
-                            </Grid>
-                        )
-                    })
-                }
+        <>
+            <Card sx = {{ marginTop : 1, width : '100%' }} >
+                <Grid container spacing = {1} >
+                    <Grid item xs = {12}>
+                        <TableContainer sx = {{ maxHeight: 440 }} >
+                            <Table stickyHeader 
+                                // sx = {{width : 350}} 
+                                aria-labelledby = 'tituloTabla' 
+                                size = 'medium'
+                            >
+                                <CabeceraTabla
+                                    orden = {orden}
+                                    configurarOrdenamiento = {configurarOrdenamiento}
+                                />
+                                {<CuerpoTabla 
+                                    ordenarPor = {ordenarPor}
+                                    orden = {orden}                                                
+                                    pagina = {pagina}
+                                    filasPorPagina = {filasPorPagina}
+                                    clientes = {clientes}
+                                    setearOpenPopup = {setearOpenPopup}
+                                />}
+                            </Table>
+                        </TableContainer>
+                        <PaginacionTabla 
+                            filasPorPagina = {filasPorPagina}
+                            setearFilasPorPagina = {setearFilasPorPagina}
+                            pagina = {pagina}
+                            setearPagina = {setearPagina}
+                            cantClientes = {clientes.length}
+                        />
+                        {/* <Popup 
+                            titulo = {constantes.TITULO_APLICACION}
+                            texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
+                            openPopup = {openPopup}
+                            setearOpenPopup = {setearOpenPopup}
+                            setMensaje = {setMensaje}
+                        /> */}
+                    </Grid>
+                </Grid>
+            </Card>
+            <Grid container spacing = {1}>
+                <Grid item xs = {12}>
+                    <Button 
+                        variant = 'contained' 
+                        fullWidth
+                        sx = {{
+                            marginLeft : '0px',
+                            padding : '20px 5px',
+                        }}
+                        onClick = { () => {  
+                            setRedirigirA('clientes/nuevo');                      
+                            router.push('/clientes/nuevo');
+                        }}
+                    >
+                        {constantes.NUEVO_CLIENTE}
+                    </Button>
+                </Grid>
             </Grid>
-        </Container>
+        </>
     )
 }
 

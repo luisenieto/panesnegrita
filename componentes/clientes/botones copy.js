@@ -4,22 +4,83 @@ import { constantes } from "../../auxiliares/auxiliaresClientes";
 import { useRouter } from 'next/router';
 import axios from "axios";
 
-const Botones = ({mostrar, cliente, setMensaje, operacion}) => {
+const Botones = ({mostrar, cliente, setMensaje, avatars, setAvatars, operacion}) => {
 
     const tema = useTheme();
     const router = useRouter();
 
+    //borra los elementos duplicados del vector
+    //Suponer que se selecciona el archivo "1" como imagen para el avatar
+    //luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
+    //El archivo avatars valdría: ["1", "2", "3", "2", "1"]
+    //Luego de llamar a esta función, el archivo valdría: ["1", "2", "3"]
+    //Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
+    //cuando se cancele la operación
+    const borrarDuplicados = (vector) => {
+        return vector.filter((item, indice) => vector.indexOf(item) === indice);
+    }
+
+    //borra el avatar elegido del vector
+    //Suponer que se selecciona el archivo "1" como imagen para el avatar
+    //luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
+    //El archivo avatars valdría: ["1", "2", "3", "2", "1"]
+    //Luego de llamar a esta función, el archivo valdría: ["2", "3"]
+    //Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
+    //cuando se cree el cliente (no tiene que borrar el archivo "1" ya que es la foto que se eligió finalmente)
+    const borrarElAvatarElegido = (vector, avatar) => {
+        //console.log(avatar);
+        return vector.filter(item => item !== avatar);
+    }
+
     const handleCancelar = async () => {
+        const avatarsSinDuplicados = borrarDuplicados(avatars);
+
+        const ruta = '/api/avatars/borrar';
+        try {
+            const respuesta = await axios({
+                url : ruta,
+                method: 'post',
+                data: avatarsSinDuplicados
+            });
+            const data = await respuesta.data;
+            //console.log(data.mensaje);
+        }
+        catch(error) {
+            console.log(error);
+        }
+        setAvatars([]);
         router.push('/clientes');
     }
 
     const handleAceptar = async () => {
-        const ruta = '/api/clientes/';
+        const rutaCrear = '/api/clientes/';
         if (operacion === 'A') { //nuevo cliente
+
+            // console.log(cliente);
+            // router.push('/clientes');  
+
             try {
-                const respuesta = await axios.post(ruta, {...cliente, operacion });
+                const respuesta = await axios.post(rutaCrear, {...cliente, operacion });
                 const data = await respuesta.data;
                 if (data.mensaje === constantes.CLIENTE_CREADO) {
+
+                    //Se borran los archivos de imágenes innecesarios
+                    const avatarsSinDuplicados = borrarDuplicados(avatars);
+                    const avatarsSinDuplicadosYSinElElegido = borrarElAvatarElegido(avatarsSinDuplicados, cliente.foto);
+                    const rutaBorrar = '/api/avatars/borrar';
+                    try {
+                        await axios({
+                            url : rutaBorrar,
+                            method: 'post',
+                            data: avatarsSinDuplicadosYSinElElegido
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                    }
+
+                    //Se limpia el vector de avatars
+                    setAvatars([]);
                     setMensaje({
                         gravedad : 'success',
                         titulo : constantes.NUEVO_CLIENTE,
@@ -74,12 +135,10 @@ const Botones = ({mostrar, cliente, setMensaje, operacion}) => {
                 }
             }
             catch(error) {
-                console.log(error);
                 setMensaje({
                     gravedad : 'error',
                     titulo : 'Error',
-                    //texto : error.response.data.mensaje || error.message,
-                    texto : 'error',
+                    texto : error.response.data.mensaje || error.message,
                     mostrar : true
                 }); 
             }
@@ -98,7 +157,7 @@ const Botones = ({mostrar, cliente, setMensaje, operacion}) => {
             <Button 
                 sx = {{color : tema.palette.secondary.main}}
                 onClick = {handleAceptar}
-                disabled = {mostrar || cliente.nombre === '' || cliente.apellido === '' || cliente.referencia === '' ? true : false}
+                disabled = {mostrar || cliente.nombre === '' || cliente.referencia === '' ? true : false}
             >
                 {constantes.ACEPTAR}
             </Button>

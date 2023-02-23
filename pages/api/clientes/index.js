@@ -1,5 +1,6 @@
 import { constantes as constantesClientes} from "../../../auxiliares/auxiliaresClientes";
-import { obtenerClientes, agregarCliente } from "./bdAuxiliares";
+import { obtenerClientes, agregarCliente, modificarCliente } from "./bdAuxiliares";
+import { ObjectId } from 'mongodb';
 
 //api para el manejo de clientes
 const handler = async (request, response) => {
@@ -9,7 +10,7 @@ const handler = async (request, response) => {
         return;
     }
     else if (request.method === 'POST') {
-        const foto = request.body.foto;
+        //const foto = request.body.foto;
         const nombre = request.body.nombre;
         const apellido = request.body.apellido;
         const referencia = request.body.referencia;
@@ -25,6 +26,12 @@ const handler = async (request, response) => {
             return;
         }
 
+        //se verifica que el apellido del cliente no esté en blanco
+        if (apellido === '') {
+            response.status(200).json({mensaje : constantesClientes.APELLIDO_EN_BLANCO});
+            return;
+        }
+
         //se verifica que la referencia no esté en blanco
         if (referencia === '') {
             response.status(200).json({mensaje : constantesClientes.REFERENCIA_EN_BLANCO});
@@ -32,13 +39,13 @@ const handler = async (request, response) => {
         }
        
         if (operacion === 'A') { //alta de cliente
-            const resultadoAgregarCliente = await agregarCliente({foto, nombre, apellido, referencia, telefono, correo, fechaNacimiento, pedidos});
+            const resultadoAgregarCliente = await agregarCliente({nombre, apellido, referencia, telefono, correo, fechaNacimiento, pedidos});
             response.status(200).json({mensaje : resultadoAgregarCliente});
         }
         else { //modificación de cliente
             const _id = new ObjectId(request.body._id);
-            // //request.body._id es un string. Cuando se busca en la BD por _id, el mismo debe ser un ObjectId            
-            const resultadoModificarCliente = await modificarCliente({_id, foto, nombre, apellido, referencia, telefono, correo, fechaNacimiento, pedidos});
+            // request.body._id es un string. Cuando se busca en la BD por _id, el mismo debe ser un ObjectId            
+            const resultadoModificarCliente = await modificarCliente({_id, nombre, apellido, referencia, telefono, correo, fechaNacimiento, pedidos});
             response.status(200).json({mensaje : resultadoModificarCliente});
         }        
     }

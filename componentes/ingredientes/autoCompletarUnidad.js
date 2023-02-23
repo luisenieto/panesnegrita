@@ -49,7 +49,8 @@ const AutoCompletarUnidad = ({leyenda, ingrediente, setIngrediente}) => {
             }
             obtenerUnidades();
         }        
-    }, []);
+    }, []); //eslint-disable-line react-hooks/exhaustive-deps 
+    //el comentario anterior es para que en la consola no aparezca el warning diciendo que el array de depdencias de useEffect está vacío
 
     const defaultProps = {
         options: unidades.map(unidad => unidad.nombre)

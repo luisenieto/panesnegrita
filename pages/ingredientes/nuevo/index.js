@@ -78,7 +78,7 @@ const NuevoIngrediente = (props) => {
     )
 }
 
-//No se puede crear una unidad sin estar logueado
+//No se puede crear un ingrediente sin estar logueado
 export const getServerSideProps = async (contexto) => {
     return await controlarSiSeEstaLogueado(contexto.req);
 }

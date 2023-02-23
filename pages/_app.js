@@ -8,6 +8,7 @@ import Layout from '../componentes/layout/layout';
 import tema1 from '../tema/tema1';
 
 function MyApp({ Component, pageProps }) {
+
 	return (
 		<Proveedor>
 			<Head>

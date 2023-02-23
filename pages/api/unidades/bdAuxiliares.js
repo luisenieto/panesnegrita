@@ -26,7 +26,7 @@ export const conectarBD = async () => {
 	return resultado;
 }
 
-//Obtiene todas las unidades
+//Obtiene todas las unidades, ordenadas alfabéticamente
 //Devuelve: objeto de la forma:
 //{
 //    mensaje : resultado de la operación (ERROR_CONEXION || UNIDADES_LEIDAS_CORRECTAMENTE || ERROR_LEER_UNIDADES)
@@ -44,7 +44,8 @@ export const obtenerUnidades = async () => {
     if (resultadoConectarBD.mensaje === constantesUnidades.CONEXION_EXITOSA) { //se pudo establecer la conexión
         const bd = resultadoConectarBD.cliente.db();
         try {
-            resultadoObtenerUnidades.unidades = await bd.collection('unidades').find().toArray();
+            resultadoObtenerUnidades.unidades = await bd.collection('unidades').find().sort({ 'nombre' : 1}).toArray();
+            //1: ordenado ascendentemente
             resultadoObtenerUnidades.mensaje = constantesUnidades.UNIDADES_LEIDAS_CORRECTAMENTE;
             resultadoConectarBD.cliente.close();            
             return resultadoObtenerUnidades;

@@ -1,14 +1,14 @@
 import { Grid, IconButton } from '@mui/material';
-import { constantes } from '../../auxiliares/auxiliaresClientes';
+import { constantes } from '../../auxiliares/auxiliaresProductos';
 import axios from 'axios';
 
-//Componente que muestra la foto para crear/modificar un cliente
-const Foto = ({cliente, setCliente, avatars, setAvatars}) => {
+//Componente que muestra la foto para crear/modificar un producto
+const Foto = ({ producto, setProducto, fotosProducto, setFotosProducto }) => {
 
     const handleImage = async (evento) => {
         //const archivo = constantes.RUTA_AVATARS + evento.target.files[0].name;
 
-        const ruta = '/api/avatars/subir';
+        const ruta = '/api/fotosProducto/subir';
         try {
             const form = new FormData();
             form.append('imagen', evento.target.files[0]);
@@ -18,19 +18,21 @@ const Foto = ({cliente, setCliente, avatars, setAvatars}) => {
             const respuesta = await axios.post(ruta, form);
             const data = await respuesta.data;
             if (data.archivo) {
+                //data.archivo: /var/www/html/panesnegrita/public/productos/WhatsApp.jpg
                 var arrayDeCadenas = data.archivo.split("/");
 
-                const archivo = constantes.RUTA_AVATARS + arrayDeCadenas[arrayDeCadenas.length - 1];
+                const archivo = constantes.RUTA_FOTOS_PRODUCTOS + arrayDeCadenas[arrayDeCadenas.length - 1];
                 //arrayDeCadenas[arrayDeCadenas.length - 1] tiene el nombre del archivo subido
-                const avatarsUpdate = [...avatars];
-                avatarsUpdate.push(archivo);
-                setAvatars(avatarsUpdate);
-                //cada vez que se selecciona una imagen distinta para el avatar, la misma se sube a la carpeta /public/avatars
-                //en el vector "avatars" se van guardando cada una de estas imágenes (los nombres y ubicación de los archivos)
-                //Si se cancela la operación de creación de un cliente, se borran las imágenes subidas
-                //Si se crea el cliente, se borran todas las imágenes previas que se hubieran elegido
+                //archivo: /productos/WhatsApp.jpg
+                const fotosProductoUpdate = [...fotosProducto];
+                fotosProductoUpdate.push(archivo);
+                setFotosProducto(fotosProductoUpdate);
+                //Cada vez que se selecciona una imagen distinta para la foto del producto, la misma se sube a la carpeta /public/productos
+                //en el vector "fotosProducto" se van guardando cada una de estas imágenes (los nombres y ubicación de los archivos)
+                //Si se cancela la operación de creación de un producto, se borran las imágenes subidas
+                //Si se crea el producto, se borran todas las imágenes previas que se hubieran elegido
 
-                setCliente({...cliente, 'foto' : archivo});  
+                setProducto({...producto, 'foto' : archivo});  
             }
         }
         catch(error) {
@@ -47,7 +49,7 @@ const Foto = ({cliente, setCliente, avatars, setAvatars}) => {
     return (
         <Grid item lg = {12} sm = {12} xs = {12}>
             <IconButton aria-label="upload picture" component="label">
-                <img src = {cliente.foto ? cliente.foto : constantes.AVATAR_PREDETERMINADO} alt = 'zz' height = {64} width = {64}/>
+                <img src = {producto.foto ? producto.foto : constantes.FOTO_PREDETERMINADA} alt = 'zz' height = {64} width = {64}/>
                 <input hidden accept = 'image/*' type = 'file' onChange = {handleImage} />
             </IconButton>
         </Grid>
