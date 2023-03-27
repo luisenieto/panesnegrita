@@ -1,81 +1,85 @@
-import numeral from 'numeral';
-
 const constantes = {
-    TITULO_APLICACION : 'Panes Negrita',
-    // ERROR : 'Error',
-    // ERROR_CONEXION : 'Error al conectar con la BD',
-    // ERROR_COMPROBAR_UNIDAD : 'Error al comprobar si existe la unidad',
-    ERROR_GUARDAR_PRODUCTO : 'Error al guardar el producto',
-    // ERROR_BORRAR_INGREDIENTE : 'Error al borrar el ingrediente',
-    // ERROR_BUSCAR_UNIDAD : 'Error al buscar una unidad',
-    ERROR_LEER_PRODUCTOS : 'Error al leer los productos',
-    ERROR_CREAR_INDICE : 'Error al crear los índices',
-    ERROR_ACTUALIZAR_PRODUCTO : 'Error al actualizar el producto',
-    INGREDIENTES : 'Ingredientes',
-    INGREDIENTE : 'Ingrediente',
-    // INGREDIENTES_CON_LA_UNIDAD : 'No se puede borrar la unidad porque hay ingredientes con la misma',
-    // CONEXION_EXITOSA : 'Conexión exitosa',
-    PRODUCTOS : 'Productos',
-    // CLIENTES_POR_PAGINA: 'Clientes por página',
-    PRODUCTOS_LEIDOS_CORRECTAMENTE: 'Productos leidos correctamente',    
-    UNIDAD : 'Unidad',
-    NOMBRE : 'Nombre',
-    DESCRIPCION : 'Descripción',
-    PRECIO : 'Precio',
+    ACEPTAR : 'Aceptar',
     AGREGAR_INGREDIENTE : 'Agregar ingrediente',
     BORRAR_INGREDIENTE : 'Borrar ingrediente',
-    MODIFICAR_INGREDIENTE : 'Modificar ingrediente',
-    // REFERENCIA : 'Referencia',
-    // TELEFONO : 'Teléfono',
-    // CORREO : 'Correo',
-    // FECHA_NACIMIENTO : 'F. Nacimiento',
-    NOMBRE_EN_BLANCO : 'El nombre del producto no puede estar en blanco',  
-    INGREDIENTE_UNIDAD_NULO : 'Al menos un ingrediente y/o una unidad no están especificados',
-    // REFERENCIA_EN_BLANCO : 'La referencia no puede estar en blanco',  
-    PRODUCTO_NULO : 'No se especificó un producto',
-    // STOCK_INVALIDO : 'La cantidad en stock no puede ser negativa',    
-    // STOCK_MINIMO_INVALIDO : 'La cantidad mínima en stock no puede ser negativa ni mayor a la cantidad en stock',    
-    // UNIDAD_SIN_ESPECIFICAR : 'No se especificó una unidad para el ingrediente',    
-    PRODUCTO_REPETIDO : 'Ya existe un producto con ese nombre',        
-    PRODUCTO_NO_REPETIDO : 'No existe un producto con ese nombre',        
-    PRODUCTO_CREADO : 'Se creó el producto correctamente',
-    PEDIDO_CREADO : 'Se creó el pedido correctamente',
-    PRODUCTO_MODIFICADO : 'Se modificó el producto',
-    // INGREDIENTE_BORRADO : 'Se borró el ingrediente',
-    NUEVO_PRODUCTO : 'Nuevo Producto',
-    NUEVO_PEDIDO : 'Nuevo Pedido',
-    // SIN_IMAGEN : '/subidas/Sin_imagen.jpg',
-    MODIFICACION_PRODUCTO : 'Modificación de producto',
-    // BORRAR_INGREDIENTE : 'Borrar ingrediente',
-    ACEPTAR : 'Aceptar',
+    BORRAR_PRODUCTO : 'Borrar producto',
     CANCELAR : 'Cancelar',
-    RUTA_FOTOS_PRODUCTOS : '/productos/',
+    CANTIDAD_ERROR : 'Al menos un ingrediente tiene una cantidad incorrecta',
+    DESCRIPCION : 'Descripción',
+    ERROR: 'Error al analizar las unidades',
+    ERROR_ACTUALIZAR_PRODUCTO : 'Error al actualizar el producto',
+    ERROR_BORRAR_PRODUCTO : 'Error al borrar el producto',
+    ERROR_CREAR_INDICE : 'Error al crear los índices',
+    ERROR_GUARDAR_PRODUCTO : 'Error al guardar el producto',
+    ERROR_LEER_PRODUCTOS : 'Error al leer los productos',
     FOTO_PREDETERMINADA : '/productos/foto-producto-predeterminado.png',    
-    // FILTROS : 'Filtros',
-    // FILTRO_TODOS : 'Todos',
-    PEDIDO : 'Nuevo pedido',    
-    // FILTRO_SIN_PEDIDOS : 'Sin pedidos',
-    // ORDENAR_POR : 'Ordenar Por:',
-    // ORDENAR_POR_APELLIDO_ASC : 'Apellido [A - Z]',
-    // ORDENAR_POR_APELLIDO_DESC : 'Apellido [Z - A]',
-    // ORDENAR_POR_PEDIDOS_ASC : 'Pedidos asc',
-    // ORDENAR_POR_PEDIDOS_DESC : 'Pedidos desc',
-    // MENSAJE_CONFIRMAR_BORRADO : '¿Confirma el borrado del ingrediente?',
+    INGREDIENTE : 'Ingrediente',
+    INGREDIENTE_UNIDAD_NULO : 'Al menos un ingrediente y/o una unidad no están especificados',
+    INGREDIENTES : 'Ingredientes',
+    MENSAJE_CONFIRMAR_BORRADO : '¿Confirma el borrado del producto?',
     MENU_EDITAR : 'Editar',
     MENU_BORRAR : 'Borrar',
     MENU_VER_PEDIDOS : 'Ver pedidos',
+    MODIFICACION_PRODUCTO : 'Modificación de producto',
+    MODIFICAR_INGREDIENTE : 'Modificar ingrediente',
+    NOMBRE : 'Nombre',
+    NOMBRE_EN_BLANCO : 'El nombre del producto no puede estar en blanco',  
+    NUEVO_PEDIDO : 'Nuevo Pedido',
+    NUEVO_PRODUCTO : 'Nuevo Producto',
+    PEDIDO : 'Nuevo pedido',    
+    PEDIDO_CREADO : 'Se creó el pedido correctamente',
+    PRECIO : 'Precio',
+    PRECIO_INCORRECTO : 'El precio es incorrecto',
+    PRODUCTO_BORRADO : 'Se borró el producto',
+    PRODUCTO_CREADO : 'Se creó el producto correctamente',
+    PRODUCTO_MODIFICADO : 'Se modificó el producto',
+    PRODUCTO_NO_REPETIDO : 'No existe un producto con ese nombre',        
+    PRODUCTO_NULO : 'No se especificó un producto',
+    PRODUCTO_REPETIDO : 'Ya existe un producto con ese nombre',        
+    PRODUCTOS : 'Productos',
+    PRODUCTOS_LEIDOS_CORRECTAMENTE : 'Productos leidos correctamente',  
+    PRODUCTOS_CON_EL_INGREDIENTE : 'No se puede borrar el ingrediente porque hay productos que tienen el ingrediente especificado',    
+    PRODUCTOS_CON_LA_UNIDAD : 'No se puede borrar la unidad porque hay productos cuyos ingredientes tienen la unidad especificada',    
+    PRODUCTOS_SIN_EL_INGREDIENTE : 'No hay productos que tengan el ingrediente especificado',
+    PRODUCTOS_SIN_LA_UNIDAD : 'No hay productos cuyos ingredientes tengan la unidad especificada',    
+    RUTA_FOTOS_PRODUCTOS : '/productos/',
+    UNIDAD : 'Unidad',   
+    UNIDAD_SIN_EQUIVALENCIA : 'Al menos una unidad no tiene equivalencia',
+    UNIDADES_CON_EQUIVALENCIAS : 'La unidades tienen equivalencias',   
+    VERIFICACION_OK : 'Producto con datos correctos' 
 }
 
 export {    
     constantes
 };
 
-export const moneda = (numero) => {
-    const formato = numero ? numeral(numero).format('$0,0.00') : '';
-    return resultado(formato, '.00');
+//Borra la foto elegida del vector
+//Suponer que se selecciona el archivo "1" como imagen para el producto
+//luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
+//El archivo de imágenes valdría: ["1", "2", "3", "2", "1"]
+//Luego de llamar a esta función, el archivo valdría: ["2", "3", "2"]
+//Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
+//cuando se cree el producto (no tiene que borrar el archivo "1" ya que es la foto que se eligió finalmente)
+//Parámetros:
+    //vector: vector con los archivos de fotos
+    //foto: foto seleccionada
+//Devuelve:
+    //El vector sin la foto especificada    
+export const borrarLaFotoElegida = (vector, foto) => {
+    return vector.filter(item => item !== foto);
 }
 
-const resultado = (formato, clave = '.00') => {
-    const isInteger = formato.includes(clave);
-    return isInteger ? formato.replace(clave, '') : formato;
+//Borra los elementos duplicados del vector
+//Suponer que se selecciona el archivo "1" como imagen para el producto
+//luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
+//El archivo de imágenes valdría: ["1", "2", "3", "2", "1"]
+//Luego de llamar a esta función, el archivo valdría: ["1", "2", "3"]
+//Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
+//cuando se cancele la operación
+//Parámetros:
+    //vector: vector con los archivos de fotos
+//Devuelve:
+    //vector con los archivos de fotos (sin duplicados)    
+export const borrarDuplicados = (vector) => {
+    return vector.filter((item, indice) => vector.indexOf(item) === indice);
 }

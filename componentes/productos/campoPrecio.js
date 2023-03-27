@@ -18,23 +18,8 @@ const CampoPrecio = ({ leyenda, producto, setProducto, mostrar }) => {
             evento.preventDefault();
     }
 
-    //Devuelve el precio como un número float o int
-    //Si textoPrecio vale ".7", le agrega un 0 ("0.7"), lo transforma a float y lo devuelve
-    //Si textoPrecio vale "0.7", lo transforma a float y lo devuelve
-    //Si textoPrecio vale "7", lo transforma a int y lo devuelve
-    const obtenerPrecioComoNumero = (textoPrecio) => {
-        let precioCorregido = textoPrecio;
-        if (textoPrecio.startsWith('.')) {        
-            precioCorregido = '0' + textoPrecio;
-        }
-        if (precioCorregido.includes('.')) //es un float
-            return parseFloat(precioCorregido);
-        else //es un int
-            return parseInt(precioCorregido);
-    }
-
     return (
-        <Grid item lg = {6} sm = {12} xs = {12}>
+        <Grid item lg = {3} sm = {3} xs = {3}>
             <TextField
                 required
                 // id = {leyenda}
@@ -49,7 +34,11 @@ const CampoPrecio = ({ leyenda, producto, setProducto, mostrar }) => {
                     disabled : mostrar,
                     onKeyDown : (evento) => {precioOnKeyDown(evento)}
                 }}
-                onChange = { evento => setProducto({...producto, 'precio': evento.target.value.trim() !== '' ? obtenerPrecioComoNumero(evento.target.value.trim()) : 0}) }
+                onChange = { evento => setProducto({
+                    ...producto, 
+                    'precio': parseFloat(evento.target.value)
+                })}
+                //onChange = { evento => setProducto({...producto, 'precio': evento.target.value.trim() !== '' ? obtenerPrecioComoNumero(evento.target.value.trim()) : 0}) }
             />
         </Grid>
     )

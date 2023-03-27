@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import axios from "axios";
 
 //Componente que muestra los botones "Aceptar" y "Cancelar" cuando se hace un nuevo pedido de un producto
-const BotonesPedidos = ({ pedido, setMensaje }) => {
+const Botones = ({ pedido, setMensaje }) => {
 
     const tema = useTheme();
     const router = useRouter();
@@ -74,4 +74,4 @@ const BotonesPedidos = ({ pedido, setMensaje }) => {
     )
 }
 
-export default BotonesPedidos;
+export default Botones;

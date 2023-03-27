@@ -19,8 +19,7 @@ const NuevoProducto = () => {
         //el _id lo genera MongoDB
         foto : null,
         nombre : '',
-        //descripcion : '',        
-        precio : 0,
+        precio : 1,
         ingredientes : [
             {
                 idIngrediente : null, //puede ser un ingrediente o un producto (en el caso de un combo)
@@ -46,8 +45,6 @@ const NuevoProducto = () => {
     //en el vector "fotosProducto" se van guardando cada una de estas imágenes (los nombres y ubicación de los archivos)
     //Si se cancela la operación de creación de un producto, se borran las imágenes subidas
     //Si se crea el producto, se borran todas las imágenes previas que se hubieran elegido
-
-    //console.log(nuevoProducto);
 
     return (
         <Container component = "main"  sx = {{ mb: 4 }}>

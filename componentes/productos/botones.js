@@ -2,6 +2,7 @@ import { Grid, Button } from "@mui/material";
 import { useTheme } from '@emotion/react';
 import { constantes } from "../../auxiliares/auxiliaresProductos";
 import { useRouter } from 'next/router';
+import { borrarLaFotoElegida, borrarDuplicados } from "../../auxiliares/auxiliaresProductos";
 import axios from "axios";
 
 //Componente que muestra los botones "Aceptar" y "Cancelar" cuando se crea/modifica un producto
@@ -9,29 +10,6 @@ const Botones = ({mostrar, producto, setMensaje, fotosProducto, setFotosProducto
 
     const tema = useTheme();
     const router = useRouter();
-
-    //borra los elementos duplicados del vector
-    //Suponer que se selecciona el archivo "1" como imagen para el producto
-    //luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
-    //El archivo de imágenes valdría: ["1", "2", "3", "2", "1"]
-    //Luego de llamar a esta función, el archivo valdría: ["1", "2", "3"]
-    //Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
-    //cuando se cancele la operación
-    const borrarDuplicados = (vector) => {
-        return vector.filter((item, indice) => vector.indexOf(item) === indice);
-    }
-
-    //borra la foto elegida del vector
-    //Suponer que se selecciona el archivo "1" como imagen para el producto
-    //luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"
-    //El archivo de imágenes valdría: ["1", "2", "3", "2", "1"]
-    //Luego de llamar a esta función, el archivo valdría: ["2", "3"]
-    //Este es el vector que se le pasará a la API encargada de borrar los archivos innecesarios
-    //cuando se cree el cliente (no tiene que borrar el archivo "1" ya que es la foto que se eligió finalmente)
-    const borrarLaFotoElegida = (vector, foto) => {
-        //console.log(avatar);
-        return vector.filter(item => item !== foto);
-    }
 
     const handleCancelar = async () => {
         const fotosSinDuplicados = borrarDuplicados(fotosProducto);

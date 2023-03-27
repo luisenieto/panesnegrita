@@ -1,4 +1,4 @@
-import { TableRow, TableCell, IconButton, Collapse, Box } from '@mui/material';
+import { TableRow, TableCell, IconButton } from '@mui/material';
 import {RiEditLine} from 'react-icons/ri';
 import {GoTrashcan} from 'react-icons/go';
 import { MdKeyboardArrowUp } from 'react-icons/md';
@@ -6,11 +6,15 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import PedidosDelCliente from './pedidosDelCliente';
-import moment from 'moment';
+import { formatearFecha } from '../../auxiliares/auxiliares';
 import { useRouter } from 'next/router';
+import { ProveedorContexto } from '../../contexto/proveedor';
+import { useContext } from 'react';
 
 const Fila = ({ unCliente, setearOpenPopup }) => {
     const router = useRouter();
+    const { setClienteABorrar, setRedirigirA } = useContext(ProveedorContexto);
+
     const [abierto, setAbierto] = useState(false);  
     //maneja el botón flecha arriba/flecha abajo para mostrar los pedidos de un cliente
 
@@ -38,7 +42,7 @@ const Fila = ({ unCliente, setearOpenPopup }) => {
         //Si sesion : null y estaAveriguando : "unauthenticated" hay que redirigir al formulario de logueo
 
         if (sesion) {
-            //setIngredienteABorrar(unCliente);
+            setClienteABorrar(unCliente);
             setearOpenPopup(true);
         }
         if (!sesion && estaAveriguando === "unauthenticated") {
@@ -62,10 +66,7 @@ const Fila = ({ unCliente, setearOpenPopup }) => {
         }        
     }
 
-    //formatea la fecha en el formato DD/MM/YYYY
-    const formatearFecha = (fecha) => {
-        return moment(fecha).format('DD/MM/YYYY');
-    }
+    
 
     return (
         <>

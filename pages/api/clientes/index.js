@@ -1,5 +1,4 @@
-import { constantes as constantesClientes} from "../../../auxiliares/auxiliaresClientes";
-import { obtenerClientes, agregarCliente, modificarCliente } from "./bdAuxiliares";
+import { obtenerClientes, agregarCliente, borrarCliente, modificarCliente } from "./bdAuxiliares";
 import { ObjectId } from 'mongodb';
 
 //api para el manejo de clientes
@@ -19,24 +18,6 @@ const handler = async (request, response) => {
         const fechaNacimiento = request.body.fechaNacimiento ? new Date(request.body.fechaNacimiento) : null;
         const pedidos = request.body.pedidos;
         const operacion = request.body.operacion;
-
-        //se verifica que el nombre del cliente no esté en blanco
-        if (nombre === '') {
-            response.status(200).json({mensaje : constantesClientes.NOMBRE_EN_BLANCO});
-            return;
-        }
-
-        //se verifica que el apellido del cliente no esté en blanco
-        if (apellido === '') {
-            response.status(200).json({mensaje : constantesClientes.APELLIDO_EN_BLANCO});
-            return;
-        }
-
-        //se verifica que la referencia no esté en blanco
-        if (referencia === '') {
-            response.status(200).json({mensaje : constantesClientes.REFERENCIA_EN_BLANCO});
-            return;
-        }
        
         if (operacion === 'A') { //alta de cliente
             const resultadoAgregarCliente = await agregarCliente({nombre, apellido, referencia, telefono, correo, fechaNacimiento, pedidos});
@@ -50,9 +31,9 @@ const handler = async (request, response) => {
         }        
     }
     else if (request.method === 'DELETE') { 
-        // const ingrediente = request.body;        
-        // const resultadoBorrarIngrediente = await borrarIngrediente(ingrediente);
-        // response.status(200).json({mensaje : resultadoBorrarIngrediente});
+        const cliente = request.body;        
+        const resultadoBorrarCliente = await borrarCliente(cliente);
+        response.status(200).json({mensaje : resultadoBorrarCliente});
     }
 }
 

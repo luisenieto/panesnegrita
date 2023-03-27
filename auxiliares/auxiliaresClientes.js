@@ -1,64 +1,69 @@
 const constantes = {
-    TITULO_APLICACION : 'Panes Negrita',
-    // ERROR : 'Error',
-    // ERROR_CONEXION : 'Error al conectar con la BD',
-    // ERROR_COMPROBAR_UNIDAD : 'Error al comprobar si existe la unidad',
-    ERROR_GUARDAR_CLIENTE : 'Error al guardar el cliente',
-    // ERROR_BORRAR_INGREDIENTE : 'Error al borrar el ingrediente',
-    // ERROR_BUSCAR_UNIDAD : 'Error al buscar una unidad',
-    ERROR_LEER_CLIENTES : 'Error al leer los clientes',
-    ERROR_CREAR_INDICE : 'Error al crear los índices',
-    ERROR_ACTUALIZAR_CLIENTE : 'Error al actualizar el cliente',
-    // INGREDIENTES_SIN_LA_UNIDAD : 'No hay ingredientes con la unidad especificada',
-    // INGREDIENTES_CON_LA_UNIDAD : 'No se puede borrar la unidad porque hay ingredientes con la misma',
-    // CONEXION_EXITOSA : 'Conexión exitosa',
-    CLIENTES : 'Clientes',
-    CLIENTES_POR_PAGINA: 'Clientes por página',
-    CLIENTES_LEIDOS_CORRECTAMENTE: 'Clientes leidos correctamente',
-    PEDIDOS : 'Pedidos',
-    // UNIDAD : 'Unidad',
-    NOMBRE : 'Nombre',
-    APELLIDO : 'Apellido',
-    REFERENCIA : 'Referencia',
-    TELEFONO : 'Teléfono',
-    CORREO : 'Correo',
-    FECHA_NACIMIENTO : 'F. Nacimiento',
-    NOMBRE_EN_BLANCO : 'El nombre del cliente no puede estar en blanco',  
-    APELLIDO_EN_BLANCO : 'El apellido del cliente no puede estar en blanco',  
-    REFERENCIA_EN_BLANCO : 'La referencia no puede estar en blanco',  
-    CLIENTE_NULO : 'No se especificó un cliente',
-    // STOCK_INVALIDO : 'La cantidad en stock no puede ser negativa',    
-    // STOCK_MINIMO_INVALIDO : 'La cantidad mínima en stock no puede ser negativa ni mayor a la cantidad en stock',    
-    // UNIDAD_SIN_ESPECIFICAR : 'No se especificó una unidad para el ingrediente',    
-    CLIENTE_REPETIDO : 'Ya existe un cliente con ese nombre y esa referencia',        
-    CLIENTE_NO_REPETIDO : 'No existe un cliente con ese nombre, apellido y esa referencia',        
-    CLIENTE_CREADO : 'Se creó el cliente correctamente',
-    CLIENTE_MODIFICADO : 'Se modificó el cliente',
-    // INGREDIENTE_BORRADO : 'Se borró el ingrediente',
-    NUEVO_CLIENTE : 'Nuevo Cliente',
-    // SIN_IMAGEN : '/subidas/Sin_imagen.jpg',
-    MODIFICACION_CLIENTE : 'Modificación de cliente',
-    // BORRAR_INGREDIENTE : 'Borrar ingrediente',
     ACEPTAR : 'Aceptar',
+    APELLIDO : 'Apellido',
+    APELLIDO_EN_BLANCO : 'El apellido del cliente no puede estar en blanco',  
+    BORRAR_CLIENTE : 'Borrar cliente',
     CANCELAR : 'Cancelar',
-    RUTA_AVATARS : '/avatars/',
-    AVATAR_PREDETERMINADO : '/avatars/avatar-predeterminado.png',    
-    FILTROS : 'Filtros',
-    FILTRO_TODOS : 'Todos',
-    FILTRO_CON_PEDIDOS : 'Con pedidos',
-    FILTRO_SIN_PEDIDOS : 'Sin pedidos',
-    ORDENAR_POR : 'Ordenar Por:',
-    ORDENAR_POR_APELLIDO_ASC : 'Apellido [A - Z]',
-    ORDENAR_POR_APELLIDO_DESC : 'Apellido [Z - A]',
-    ORDENAR_POR_PEDIDOS_ASC : 'Pedidos asc',
-    ORDENAR_POR_PEDIDOS_DESC : 'Pedidos desc',
-    // MENSAJE_CONFIRMAR_BORRADO : '¿Confirma el borrado del ingrediente?',
-    // ESTADO_CON_STOCK : 'Con stock',
-    // ESTADO_CRITICO : 'Crítico',
-    // ESTADO_SIN_STOCK : 'Sin stock',
-    // ESTADO : 'Estado',
+    CLIENTE_BORRADO : 'Se borró el cliente',
+    CLIENTE_MODIFICADO : 'Se modificó el cliente',
+    CLIENTE_NULO : 'No se especificó un cliente',
+    CLIENTE_CREADO : 'Se creó el cliente correctamente',
+    CLIENTE_NO_REPETIDO : 'No existe un cliente con ese nombre, apellido y esa referencia',        
+    CLIENTE_REPETIDO : 'Ya existe un cliente con ese nombre y esa referencia',        
+    CLIENTES : 'Clientes',    
+    CLIENTES_LEIDOS_CORRECTAMENTE: 'Clientes leidos correctamente',
+    CLIENTES_POR_PAGINA: 'Clientes por página',
+    CORREO : 'Correo',
+    ERROR_ACTUALIZAR_CLIENTE : 'Error al actualizar el cliente',
+    ERROR_BORRAR_CLIENTE : 'Error al borrar el cliente',
+    ERROR_CREAR_INDICE : 'Error al crear los índices',
+    ERROR_GUARDAR_CLIENTE : 'Error al guardar el cliente',
+    ERROR_LEER_CLIENTES : 'Error al leer los clientes',    
+    FECHA_NACIMIENTO : 'F. Nacimiento',
+    MENSAJE_CONFIRMAR_BORRADO : '¿Confirma el borrado del cliente?',
+    MODIFICACION_CLIENTE : 'Modificación de cliente',
+    NOMBRE : 'Nombre',
+    NOMBRE_EN_BLANCO : 'El nombre del cliente no puede estar en blanco',  
+    NUEVO_CLIENTE : 'Nuevo Cliente',
+    PEDIDOS : 'Pedidos',    
+    REFERENCIA : 'Referencia',
+    REFERENCIA_EN_BLANCO : 'La referencia no puede estar en blanco',  
+    TELEFONO : 'Teléfono',   
+    VERIFICACION_OK : 'Cliente con datos correctos'
 }
 
 export {    
     constantes
 };
+
+//Dada una cadena que representa un cliente de la forma "apellido, nombre (referencia)", 
+//devuelve el idCliente correspondiente (como un String)
+//Si no hay un cliente con esos datos, devuelve null
+//Parámetros:
+    //cadenaCliente: cadena que representa un cliente
+    //clientes: vector de clientes
+//Devuelve:
+    //id del cliente (como String), o null
+export const obtenerIdCliente = (cadenaCliente, clientes) => {
+    for(let i in clientes) {
+        if (cadenaCliente === clientes[i].apellido + ', ' + clientes[i].nombre + ' (' + clientes[i].referencia + ')')
+            return clientes[i]._id;
+    }
+    return null;
+}
+
+//Dado el idCliente, devuelve una cadena de la forma "apellido, nombre (referencia)"
+//Si no hay un cliente con el idCliente especificado, devuelve null
+//Parámetros:
+    //idCliente: id del cliente a buscar (como String)
+    //clientes: vector de clientes
+//Devuelve:
+    //cadena de la forma "apellido, nombre (referencia)" (si se encuentra el cliente), o null
+export const obtenerCadenaCliente = (idCliente, clientes) => {
+    for(let i in clientes) {
+        if (idCliente === clientes[i]._id)
+            return clientes[i].apellido + ', ' + clientes[i].nombre + ' (' + clientes[i].referencia + ')';
+    }
+    return null;
+}
+

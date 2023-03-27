@@ -2,11 +2,12 @@ import { Grid, TableContainer, Table, Card, Button } from '@mui/material';
 import CabeceraTabla from '../../componentes/unidades/cabeceraTabla';
 import CuerpoTabla from '../../componentes/unidades/cuerpoTabla';
 import PaginacionTabla from '../../componentes/unidades/paginacionTabla';
-import MensajeInformativo from '../../componentes/unidades/mensajeInformativo';
+import MensajeInformativo from '../../componentes/comunes/mensajeInformativo';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useContext } from 'react';
 import { ProveedorContexto } from '../../contexto/proveedor';
-import { constantes } from '../../auxiliares/auxiliaresUnidades';
+import { constantes as constantesUnidades } from '../../auxiliares/auxiliaresUnidades';
+import { constantes as constantesAplicacion} from '../../auxiliares/auxiliaresAplicacion';
 import { obtenerUnidades } from '../api/unidades/bdAuxiliares';
 import Popup from '../../componentes/unidades/popup';
 
@@ -25,7 +26,7 @@ const Unidades = (props) => {
     //se cargan en memoria las unidades. Esto le sirve a componentes como Equivalencia por ejemplo
     
     const [mensaje, setMensaje] = useState(
-        props.mensaje === constantes.UNIDADES_LEIDAS_CORRECTAMENTE ?
+        props.mensaje === constantesUnidades.UNIDADES_LEIDAS_CORRECTAMENTE ?
             {
                 gravedad : 'error',
                 titulo : '',
@@ -35,8 +36,8 @@ const Unidades = (props) => {
         :
             {
                 gravedad : 'error',
-                titulo : constantes.ERROR,
-                texto : props.mensaje || constantes.ERROR_LEER_UNIDADES,
+                titulo : constantesAplicacion.ERROR,
+                texto : props.mensaje || constantesUnidades.ERROR_LEER_UNIDADES,
                 mostrar : true
             }
     );
@@ -101,8 +102,8 @@ const Unidades = (props) => {
                                         cantUnidades = {unidades.length}
                                     />
                                     <Popup 
-                                        titulo = {constantes.TITULO_APLICACION}
-                                        texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
+                                        titulo = {constantesAplicacion.TITULO_APLICACION}
+                                        texto = {constantesUnidades.MENSAJE_CONFIRMAR_BORRADO}
                                         openPopup = {openPopup}
                                         setearOpenPopup = {setearOpenPopup}
                                         setMensaje = {setMensaje}
@@ -112,6 +113,7 @@ const Unidades = (props) => {
                                 <MensajeInformativo 
                                     mensaje = {mensaje}
                                     setMensaje = {setMensaje}
+                                    ruta = '/unidades'
                                 />
                         }                        
                     </Grid>                
@@ -133,7 +135,7 @@ const Unidades = (props) => {
                                     router.push('/unidades/nueva');
                                 }}
                             >
-                                {constantes.NUEVA_UNIDAD}
+                                {constantesUnidades.NUEVA_UNIDAD}
                             </Button>
                         </Grid>
                     </Grid>                

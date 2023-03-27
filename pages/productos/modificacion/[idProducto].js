@@ -1,8 +1,8 @@
 import { obtenerProductoParaModificar } from "../../api/productos/bdAuxiliares";
-import { useState, useContext, useEffect } from "react";
+import { useState } from "react";
 import { ObjectId } from 'mongodb';
 import { constantes } from "../../../auxiliares/auxiliaresProductos";
-import { Divider, Chip, Container, Paper, Grid, Typography } from '@mui/material';
+import { Container, Paper, Grid } from '@mui/material';
 import EtiquetaEstado from "../../../componentes/comunes/etiquetaEstado";
 import EtiquetaTitulo from "../../../componentes/comunes/etiquetaTitulo";
 import Foto from "../../../componentes/productos/foto";

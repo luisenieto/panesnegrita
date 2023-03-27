@@ -1,6 +1,7 @@
 import { Grid, Autocomplete, TextField } from '@mui/material';
 import { ProveedorContexto } from '../../contexto/proveedor';
 import { useEffect, useContext } from 'react';
+import { obtenerIdCliente, obtenerCadenaCliente } from '../../auxiliares/auxiliaresClientes';
 import axios from 'axios';
 
 
@@ -21,7 +22,6 @@ const AutoCompletarCliente = ({leyenda, pedido, setPedido}) => {
                 try {
                     const respuesta = await axios.get(ruta);
                     const data = await respuesta.data; 
-                    //console.log(data);
                     setClientes(data.clientes);
                     //los _id son cadenas
                 }
@@ -38,30 +38,9 @@ const AutoCompletarCliente = ({leyenda, pedido, setPedido}) => {
         options: clientes.map(cliente => cliente.apellido + ', ' + cliente.nombre + ' (' + cliente.referencia + ')')
     };
 
-    //Dada una cadena que representa un cliente de la forma "apellido, nombre (referencia)", 
-    //devuelve el idCliente correspondiente (como un String)
-    //Si no hay un cliente con esos datos, devuelve null
-    const obtenerIdCliente = (cadenaCliente) => {
-        for(let i in clientes) {
-            if (cadenaCliente === clientes[i].apellido + ', ' + clientes[i].nombre + ' (' + clientes[i].referencia + ')')
-                return clientes[i]._id;
-        }
-        return null;
-    }
-
-    //Dado el idCliente, devuelve una cadena de la forma "apellido, nombre (referencia)"
-    //Si no hay un cliente con el idCliente especificado, devuelve null
-    const obtenerCadenaCliente = (idCliente) => {
-        for(let i in clientes) {
-            if (idCliente === clientes[i]._id)
-                return clientes[i].apellido + ', ' + clientes[i].nombre + ' (' + clientes[i].referencia + ')';
-        }
-        return null;
-    }
-
     const autoCompleteOnChange = (valor) => {
         if (valor !== null && valor.trim() !== '')
-            setPedido({...pedido, idCliente : obtenerIdCliente(valor.trim())});
+            setPedido({...pedido, idCliente : obtenerIdCliente(valor.trim(), clientes)});
         if (valor === null)
             setPedido({...pedido, idCliente : null});
     }
@@ -73,7 +52,7 @@ const AutoCompletarCliente = ({leyenda, pedido, setPedido}) => {
                 isOptionEqualToValue = {(option, value) => option.value === value.value}
                 //disabled = {edicion ? true : false}
                 renderInput = {(params) => <TextField {...params} label = {leyenda} />}
-                value = {pedido.idCliente ? obtenerCadenaCliente(pedido.idCliente) : null}
+                value = {pedido.idCliente ? obtenerCadenaCliente(pedido.idCliente, clientes) : null}
                 onChange = {(evento, valor) => autoCompleteOnChange(valor)}
             />
         </Grid>

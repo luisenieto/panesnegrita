@@ -33,6 +33,7 @@ const Equivalencias = ({leyenda, unidad, setUnidad, mostrar}) => {
     //(es la posición en el vector de equivalencias de la equivalencia a editar)
     
     const { equivalencias } = unidad;
+    
     //se ejecuta al seleccionar el botón que permite definir una nueva equivalencia (+)
     const fabHandler = () => {
         setNombreUnidadEquivalencia(null);

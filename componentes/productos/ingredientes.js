@@ -4,8 +4,10 @@ import { Fragment, useEffect, useState, useContext } from 'react';
 import { ProveedorContexto } from '../../contexto/proveedor';
 import axios from 'axios';
 import { HiOutlineViewGridAdd } from 'react-icons/hi';
-import { RiEditLine } from 'react-icons/ri';
 import { GoTrashcan } from 'react-icons/go';
+import { obtenerNombreUnidad, obtener_Id } from '../../auxiliares/auxiliaresUnidades';
+import { obtenerIdIngrediente, obtenerNombreIngrediente, yaEstaEsteIngrediente } from '../../auxiliares/auxiliaresIngredientesYProductos';
+//import { obtenerIdIngrediente, obtenerNombreIngrediente } from '../../auxiliares/auxiliaresIngredientesYProductos';
 
 
 //Componente que muestra los ingredientes de un producto
@@ -69,7 +71,6 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
     //Se ejecuta cada vez que se presiona una tecla en el campo "Cantidad"
     const cantidadOnKeyDown = (evento) => {
         var charCode = (evento.which) ? evento.which : evento.keyCode;         
-        //charCode = 9: tab
         //charCode = 107: + (teclado numérico)
         //charCode = 109: - (teclado numérico)
         //charCode = 187: + (teclado normal)
@@ -79,50 +80,10 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
             evento.preventDefault();
     }
 
-    //Dado el _id de un ingrediente (ingrediente propiamente dicho o producto), devuelve su nombre
-    //Si no hay un ingrediente con el _id especificado, devuelve null
-    const obtenerNombreIngrediente = (idIngrediente) => {        
-        for(let i in ingredientesYProductos) {
-            if (idIngrediente === ingredientesYProductos[i].idIngrediente)
-                return ingredientesYProductos[i].nombre;
-        }
-        return null;
-    }
-
-    //Dado el _id de una unidad, devuelve su nombre
-    //Si no hay una unidad con el _id especificado, devuelve null
-    const obtenerNombreUnidad = (idUnidad) => {
-        for(let i in unidades) {
-            if (idUnidad === unidades[i]._id)
-                return unidades[i].nombre;
-        }
-        return null;
-    }
-
-    //Dado el nombre de un ingrediente (ingrediente propiamente dicho o producto), devuelve su _id
-    //Si no hay un ingrediente con el nombre especificado, devuelve null
-    const obtenerIdIngrediente = (nombreIngrediente) => {
-        for(let i in ingredientesYProductos) {
-            if (nombreIngrediente === ingredientesYProductos[i].nombre)
-                return ingredientesYProductos[i].idIngrediente;
-        }
-        return null;
-    }
-
-    //Dado el nombre de una unidad, devuelve su _id
-    //Si no hay una unidad con el nombre especificado, devuelve null
-    const obtenerIdUnidad = (nombreUnidad) => {
-        for(let i in unidades) {
-            if (nombreUnidad === unidades[i].nombre)
-                return unidades[i]._id;
-        }
-        return null;
-    }
-
     const autoCompleteIngredienteOnChange = (valor, posicion) => {
         const ingredientesUpdate = [...producto.ingredientes];
         if (valor !== null && valor.trim() !== '') {            
-            ingredientesUpdate[posicion].idIngrediente = obtenerIdIngrediente(valor);
+            ingredientesUpdate[posicion].idIngrediente = obtenerIdIngrediente(valor, ingredientesYProductos);
             setProducto({...producto, ingredientes : ingredientesUpdate});
         }
         if (valor === null) {
@@ -134,7 +95,7 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
     const autoCompleteUnidadOnChange = (valor, posicion) => {
         const ingredientesUpdate = [...producto.ingredientes];
         if (valor !== null && valor.trim() !== '') {            
-            ingredientesUpdate[posicion].idUnidad = obtenerIdUnidad(valor);
+            ingredientesUpdate[posicion].idUnidad = obtener_Id(valor, unidades);
             setProducto({...producto, ingredientes : ingredientesUpdate});
         }
         if (valor === null) {
@@ -161,27 +122,10 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
         setProducto({...producto, ingredientes : ingredientesUpdate});
     }
 
-    //Permite tener la cantidad del ingrediente como un número float o int
-    //Si textoCantidad vale ".7", le agrega un 0 ("0.7"), lo transforma a float y lo devuelve
-    //Si textoCantidad vale "0.7", lo transforma a float y lo devuelve
-    //Si textoCantidad vale "7", lo transforma a int y lo devuelve
-    const transformarANumero = (textoCantidad) => {
-        let cantidadCorregida = textoCantidad;
-        if (textoCantidad === '')
-            return 0;
-        if (textoCantidad.startsWith('.')) {        
-            cantidadCorregida = '0' + textoCantidad;
-        }
-        if (cantidadCorregida.includes('.')) //es un float
-            return parseFloat(cantidadCorregida);
-        else //es un int
-            return parseInt(cantidadCorregida);
-    }
-
     //Se ejecuta cuando se modifica la cantidad de un ingrediente
     const cantidadOnChange = (valor, posicion) => {
         const ingredientesUpdate = [...producto.ingredientes];
-        ingredientesUpdate[posicion].cantidad = transformarANumero(valor);
+        ingredientesUpdate[posicion].cantidad = parseFloat(valor);
         setProducto({...producto, ingredientes : ingredientesUpdate});        
     }
     
@@ -190,17 +134,17 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
             {
                 producto.ingredientes.map((ingrediente, i) => (
                     <Fragment key = {i}>
-                        <Grid item lg = {4} sm = {9} xs = {12}>
+                        <Grid item lg = {4} sm = {4} xs = {9}>
                             <Autocomplete 
                                 {...defaultPropsIngredientes}
                                 isOptionEqualToValue = {(option, value) => option.value === value.value}
-                                //disabled = {edicion ? true : false}
                                 renderInput = {(params) => <TextField {...params} label = {constantes.INGREDIENTE} />}
-                                value = {ingrediente.idIngrediente ? obtenerNombreIngrediente(ingrediente.idIngrediente) : null}
+                                getOptionDisabled = { opcion => opcion === yaEstaEsteIngrediente(opcion, producto.ingredientes, ingredientesYProductos) }
+                                value = {ingrediente.idIngrediente ? obtenerNombreIngrediente(ingrediente.idIngrediente, ingredientesYProductos) : null}
                                 onChange = {(evento, valor) => autoCompleteIngredienteOnChange(valor, i)}
                             />
                         </Grid>
-                        <Grid item lg = {2} sm = {3} xs = {3}>
+                        <Grid item lg = {2} sm = {2} xs = {3}>
                             <TextField
                                 required
                                 label = 'Cantidad'
@@ -209,7 +153,6 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
                                 type = 'Number'
                                 value = {ingrediente.cantidad}
                                 inputProps = {{
-                                    //disabled : mostrar,
                                     min : 1,
                                     style : {textAlign : 'center'},
                                     onKeyDown : (evento) => { cantidadOnKeyDown(evento) }
@@ -217,17 +160,16 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
                                 onChange = { evento => cantidadOnChange(evento.target.value, i) }
                             />
                         </Grid>
-                        <Grid item lg = {3} sm = {6} xs = {9}>
+                        <Grid item lg = {4} sm = {4} xs = {8}>
                             <Autocomplete 
                                 {...defaultPropsUnidades}
                                 isOptionEqualToValue = {(option, value) => option.value === value.value}
-                                //disabled = {edicion ? true : false}
                                 renderInput = {(params) => <TextField {...params} label = {constantes.UNIDAD} />}
-                                value = {ingrediente.idUnidad ? obtenerNombreUnidad(ingrediente.idUnidad) : null}
+                                value = {ingrediente.idUnidad ? obtenerNombreUnidad(ingrediente.idUnidad, unidades) : null}
                                 onChange = {(evento, valor) => autoCompleteUnidadOnChange(valor, i)}
                             />
                         </Grid>
-                        <Grid item lg = {1} sm = {2} xs = {2} >
+                        <Grid item lg = {1} sm = {1} xs = {2} >
                             <Tooltip title = {constantes.AGREGAR_INGREDIENTE} placement = 'top'>
                                 <span>
                                     <IconButton
@@ -239,7 +181,7 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
                                 </span>
                             </Tooltip>
                         </Grid>
-                        <Grid item lg = {1} sm = {2} xs = {2}>
+                        <Grid item lg = {1} sm = {1} xs = {2}>
                             <Tooltip title = {constantes.BORRAR_INGREDIENTE} placement = 'top'>
                                 <span>
                                     <IconButton
@@ -248,19 +190,6 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
                                         disabled = {producto.ingredientes.length === 1 ? true : false}
                                     >
                                         <GoTrashcan />
-                                    </IconButton>
-                                </span>
-                            </Tooltip>
-                        </Grid>
-                        <Grid item lg = {1} sm = {2} xs = {2}>
-                            <Tooltip title = {constantes.MODIFICAR_INGREDIENTE} placement = 'top'>
-                                <span>
-                                    <IconButton
-                                        size = 'small'
-                                        //onClick = {() => mostrarVentanaDialogo(false, i)}                                        
-                                        disabled = {operacion === 'A' ? true : false}
-                                    >
-                                        <RiEditLine />
                                     </IconButton>
                                 </span>
                             </Tooltip>

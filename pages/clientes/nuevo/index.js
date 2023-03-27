@@ -11,7 +11,6 @@ import CampoReferencia from '../../../componentes/clientes/campoReferencia';
 import CampoTelefono from '../../../componentes/clientes/campoTelefono';
 import CampoCorreo from '../../../componentes/clientes/campoCorreo';
 import CampoFechaNacimiento from '../../../componentes/clientes/campoFechaNacimiento';
-//import Foto from '../../../componentes/clientes/foto';
 import Botones from '../../../componentes/clientes/botones';
 import MensajeInformativo from '../../../componentes/comunes/mensajeInformativo';
 import { controlarSiSeEstaLogueado } from '../../../lib/auth';
@@ -21,7 +20,6 @@ import { MdImportExport } from 'react-icons/md';
 const NuevoCliente = () => {
     const [nuevoCliente, setNuevoCliente ] = useState({
         //el _id lo genera MongoDB
-        //foto : null,
         nombre : '',
         apellido : '',
         referencia : '',
@@ -30,17 +28,7 @@ const NuevoCliente = () => {
         fechaNacimiento : null,
         pedidos : []
     });
-    //nuevoClinte es el cliente que se está creando    
-    // pedidos = [
-    //     {
-    //         _id 
-    //         idProducto
-    //         nombre
-    //         cantidad
-    //         importe 
-    //         estado ['pedido' || 'en elaboración' || 'terminado' ]
-    //     }
-    // ]
+    //nuevoClinte es el cliente que se está creando  
 
     const [mensaje, setMensaje] = useState({
         gravedad : 'error',
@@ -49,10 +37,6 @@ const NuevoCliente = () => {
         mostrar : false
     });
     //controla el componente MensajeInformativo
-
-    //const [avatars, setAvatars] = useState([]);
-    //contiene el nombre de todos los avatars que se pudieran elegir para un cliente
-
 
     return (
         <Container component = "main"  sx = {{ mb: 4 }}>

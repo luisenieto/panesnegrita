@@ -19,6 +19,12 @@ const Proveedor = ({ children }) => {
     const [ingredienteABorrar, setIngredienteABorrar] = useState(null);
     //ingrediente que se está por borrar (sirve para el popup que borra un ingrediente)
 
+    const [clienteABorrar, setClienteABorrar] = useState(null);
+    //cliente que se está por borrar (sirve para el popup que borra un cliente)
+
+    const [productoABorrar, setProductoABorrar] = useState(null);
+    //producto que se está por borrar (sirve para el popup que borra un producto)
+
     const [redirigirA, setRedirigirA] = useState(null);
     //sirve para redirigir a una página en particular
     //Por ejemplo, sin estar logueado se quiere crear una unidad
@@ -37,6 +43,10 @@ const Proveedor = ({ children }) => {
             setUnidadABorrar,
             ingredienteABorrar, 
             setIngredienteABorrar,
+            clienteABorrar, 
+            setClienteABorrar,
+            productoABorrar, 
+            setProductoABorrar,
             redirigirA, 
             setRedirigirA
         }}>

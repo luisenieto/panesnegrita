@@ -1,15 +1,15 @@
 import { obtenerProductoParaModificar } from '../../../api/productos/bdAuxiliares';
 import { ObjectId } from 'mongodb';
 import { useState } from 'react';
-import { Divider, Chip, Container, Paper, Grid, Typography } from '@mui/material';
+import { Container, Paper, Grid } from '@mui/material';
 import EtiquetaTitulo from '../../../../componentes/comunes/etiquetaTitulo';
 import EtiquetaEstado from '../../../../componentes/comunes/etiquetaEstado';
-import AutoCompletarCliente from '../../../../componentes/productos/autoCompletarCliente';
-import CampoCantidad from '../../../../componentes/productos/campoCantidad';
-import CampoImporte from '../../../../componentes/productos/campoImporte';
+import AutoCompletarCliente from '../../../../componentes/pedidos/autoCompletarCliente';
+import CampoCantidad from '../../../../componentes/pedidos/campoCantidad';
+import CampoImporte from '../../../../componentes/pedidos/campoImporte';
 import { constantes } from '../../../../auxiliares/auxiliaresPedidos';
-import { moneda } from '../../../../auxiliares/auxiliaresProductos';
-import BotonesPedidos from '../../../../componentes/productos/botonesPedidos';
+import { moneda } from '../../../../auxiliares/auxiliares';
+import Botones from '../../../../componentes/pedidos/botones';
 import MensajeInformativo from '../../../../componentes/comunes/mensajeInformativo';
 
 const NuevoPedido = (props) => {
@@ -63,7 +63,7 @@ const NuevoPedido = (props) => {
                         setMensaje = {setMensaje}
                         ruta = '/productos'
                     />
-                    <BotonesPedidos 
+                    <Botones 
                         pedido = {pedido}
                         setMensaje = {setMensaje}
                     />

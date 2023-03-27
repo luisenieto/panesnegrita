@@ -5,10 +5,12 @@ import CabeceraTabla from '../../componentes/ingredientes/cabeceraTabla';
 import CuerpoTabla from "../../componentes/ingredientes/cuerpoTabla";
 import PaginacionTabla from "../../componentes/ingredientes/paginacionTabla";
 import { constantes } from "../../auxiliares/auxiliaresIngredientes";
+import { constantes as constantesAplicacion } from "../../auxiliares/auxiliaresAplicacion";
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { ProveedorContexto } from "../../contexto/proveedor";
 import Popup from "../../componentes/ingredientes/popup";
+import MensajeInformativo from '../../componentes/comunes/mensajeInformativo';
 
 const Ingredientes = (props) => {
     const { unidades, setUnidades, setRedirigirA } = useContext(ProveedorContexto); 
@@ -85,40 +87,51 @@ const Ingredientes = (props) => {
             <Card sx = {{ marginTop : 1, width : '100%' }} >
                 <Grid container spacing = {1} >
                     <Grid item xs = {12}>
-                        <TableContainer sx = {{ maxHeight: 440 }} >                            
-                            <Table stickyHeader 
-                                // sx = {{width : 350}} 
-                                aria-labelledby = 'tituloTabla' 
-                                size = 'medium'
-                            >
-                                <CabeceraTabla
-                                    orden = {orden}
-                                    configurarOrdenamiento = {configurarOrdenamiento}
+                        {
+                            !mensaje.mostrar ?  
+                                <>
+                                    <TableContainer sx = {{ maxHeight: 440 }} >                            
+                                        <Table stickyHeader 
+                                            // sx = {{width : 350}} 
+                                            aria-labelledby = 'tituloTabla' 
+                                            size = 'medium'
+                                        >
+                                            <CabeceraTabla
+                                                orden = {orden}
+                                                configurarOrdenamiento = {configurarOrdenamiento}
+                                            />
+                                            <CuerpoTabla 
+                                                ordenarPor = {ordenarPor}
+                                                orden = {orden}                                                
+                                                pagina = {pagina}
+                                                filasPorPagina = {filasPorPagina}
+                                                ingredientes = {ingredientes}
+                                                setearOpenPopup = {setearOpenPopup}
+                                            />
+                                        </Table>
+                                    </TableContainer>
+                                    <PaginacionTabla 
+                                        filasPorPagina = {filasPorPagina}
+                                        setearFilasPorPagina = {setearFilasPorPagina}
+                                        pagina = {pagina}
+                                        setearPagina = {setearPagina}
+                                        cantIngredientes = {ingredientes.length}
+                                    />
+                                    <Popup 
+                                        titulo = {constantesAplicacion.TITULO_APLICACION}
+                                        texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
+                                        openPopup = {openPopup}
+                                        setearOpenPopup = {setearOpenPopup}
+                                        setMensaje = {setMensaje}
+                                    />
+                                </>
+                            :
+                                <MensajeInformativo 
+                                    mensaje = {mensaje}
+                                    setMensaje = {setMensaje}
+                                    ruta = '/ingredientes'
                                 />
-                                 <CuerpoTabla 
-                                    ordenarPor = {ordenarPor}
-                                    orden = {orden}                                                
-                                    pagina = {pagina}
-                                    filasPorPagina = {filasPorPagina}
-                                    ingredientes = {ingredientes}
-                                    setearOpenPopup = {setearOpenPopup}
-                                />
-                            </Table>
-                        </TableContainer>
-                        <PaginacionTabla 
-                            filasPorPagina = {filasPorPagina}
-                            setearFilasPorPagina = {setearFilasPorPagina}
-                            pagina = {pagina}
-                            setearPagina = {setearPagina}
-                            cantIngredientes = {ingredientes.length}
-                        />
-                        <Popup 
-                            titulo = {constantes.TITULO_APLICACION}
-                            texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
-                            openPopup = {openPopup}
-                            setearOpenPopup = {setearOpenPopup}
-                            setMensaje = {setMensaje}
-                        />
+                        }
                     </Grid>
                 </Grid>
             </Card>

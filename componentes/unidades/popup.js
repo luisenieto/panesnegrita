@@ -10,6 +10,7 @@ import { ProveedorContexto } from "../../contexto/proveedor";
 import { useContext } from 'react';
 import { constantes } from '../../auxiliares/auxiliaresUnidades';
 
+//Componente que muestra el popup donde se confirma el borrado de una unidad
 const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
     const tema = useTheme();
     const { unidadABorrar, setUnidades } = useContext(ProveedorContexto);
@@ -94,7 +95,10 @@ const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
     }
 
     return (
-        <Dialog open = {openPopup} onClose = {() => setearOpenPopup(false)}>
+        <Dialog 
+            open = {openPopup} 
+            onClose = { () => setearOpenPopup(false) }
+        >
             <DialogTitle>{titulo}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -105,13 +109,13 @@ const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
                         sx = {{color : tema.palette.secondary.main}}
                         onClick = { handleAceptar }
                     >
-                        Aceptar
+                        {constantes.ACEPTAR}
                     </Button>
                     <Button 
                         sx = {{color : tema.palette.secondary.main}}
                         onClick = {() => setearOpenPopup(false)}
                     >
-                        Cancelar
+                        {constantes.CANCELAR}
                     </Button>
                 </DialogActions>
             </DialogContent>

@@ -3,7 +3,7 @@ import { Grid, TextField } from '@mui/material';
 //Componente que muestra el campo de texto (nombre) para crear/modificar un producto
 const CampoNombre = ({leyenda, producto, setProducto, mostrar}) => {
     return (
-        <Grid item lg = {6} sm = {12} xs = {12}>
+        <Grid item lg = {9} sm = {9} xs = {9}>
             <TextField
                 required
                 id = {leyenda}

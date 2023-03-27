@@ -7,32 +7,33 @@ import { Button } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { ProveedorContexto } from '../../contexto/proveedor';
 import { useContext } from 'react';
-import { constantes } from '../../auxiliares/auxiliaresIngredientes';
+import { constantes } from '../../auxiliares/auxiliaresClientes';
 import axios from 'axios';
 
-//Componente que muestra el popup donde se confirma el borrado de un ingrediente
+//Componente que muestra el popup donde se confirma el borrado de un cliente
 const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
     const tema = useTheme();
-    const { ingredienteABorrar } = useContext(ProveedorContexto);
+    const { clienteABorrar } = useContext(ProveedorContexto);
 
     const handleAceptar = async () => {        
-        const ruta = '/api/ingredientes';
+        const ruta = '/api/clientes';
         try {
-            const respuestaBorrar = await axios.delete(ruta, {data : ingredienteABorrar});
+            const respuestaBorrar = await axios.delete(ruta, {data : clienteABorrar});
             const dataBorrar = await respuestaBorrar.data;
-            if (dataBorrar.mensaje === constantes.INGREDIENTE_BORRADO) { //se pudo borrar el ingrediente
+            console.log(dataBorrar.mensaje);
+            if (dataBorrar.mensaje === constantes.CLIENTE_BORRADO) { //se pudo borrar el cliente
                 //ver el tema del refresco
                 setMensaje({
                     gravedad : 'success',
-                    titulo : constantes.BORRAR_INGREDIENTE,
-                    texto : constantes.INGREDIENTE_BORRADO,
+                    titulo : constantes.BORRAR_CLIENTE,
+                    texto : constantes.CLIENTE_BORRADO,
                     mostrar : true
                 });
             }
             else {                
                 setMensaje({
                     gravedad : 'error',
-                    titulo : constantes.BORRAR_INGREDIENTE,
+                    titulo : constantes.BORRAR_CLIENTE,
                     texto : dataBorrar.mensaje,
                     mostrar : true
                 });
@@ -41,7 +42,7 @@ const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
         catch(error) {            
             setMensaje({
                 gravedad : 'error',
-                titulo : constantes.BORRAR_INGREDIENTE,
+                titulo : constantes.BORRAR_CLIENTE,
                 texto : error.response.data.mensaje || error.message,
                 mostrar : true
             });

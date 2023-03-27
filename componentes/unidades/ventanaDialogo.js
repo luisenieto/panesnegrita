@@ -8,6 +8,7 @@ import { ProveedorContexto } from '../../contexto/proveedor';
 import { constantes } from '../../auxiliares/auxiliaresUnidades';
 
 //Componente que muestra la ventana de diálogo que permite crear/editar una equivalencia
+
 //visible: determina si se muestra/oculta la ventana de diálogo
 //setVisible: permite mostrar/ocultar la ventana de diálogo
 //unidad: unidad a la cual se le están definiendo las equivalencias
@@ -46,7 +47,7 @@ const VentanaDialogo = ({visible, setVisible, unidad, setUnidad, nombreUnidadEqu
 
     return (
         <Dialog disableEscapeKeyDown open = {visible} onClose = {handleClose} >
-            <DialogTitle>Nueva equivalencia</DialogTitle>
+            <DialogTitle>{constantes.NUEVA_EQUIVALENCIA}</DialogTitle>
             <DialogContent>
                 <Box component = "form" sx = {{ display: 'flex', flexWrap: 'wrap' }} >
                     <FormControl sx = {{ m: 1, width: 200 }}>

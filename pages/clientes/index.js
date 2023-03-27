@@ -4,9 +4,12 @@ import { useState, useEffect, useContext } from 'react';
 import { ProveedorContexto } from "../../contexto/proveedor";
 import { useRouter } from 'next/router';
 import { constantes } from "../../auxiliares/auxiliaresClientes";
+import { constantes as contantesAplicacion } from "../../auxiliares/auxiliaresAplicacion";
 import CabeceraTabla from "../../componentes/clientes/cabeceraTabla";
 import CuerpoTabla from "../../componentes/clientes/cuerpoTabla";
 import PaginacionTabla from "../../componentes/clientes/paginacionTabla";
+import Popup from '../../componentes/clientes/popup';
+import MensajeInformativo from "../../componentes/comunes/mensajeInformativo";
 
 //Componente que muestra todos los clientes
 const Clientes = (props) => {    
@@ -24,7 +27,7 @@ const Clientes = (props) => {
     //se cargan en memoria los clientes. Esto le sirve a componentes como ... por ejemplo
 
     const ordenarPor = 'nombre';
-    //sólo se pueden ordenar los ingredientes por su nombre
+    //sólo se pueden ordenar los clientes por su nombre
 
     const [orden, setearOrden] = useState('asc');
     //por defecto, los clientes se ordenan alfabéticamente
@@ -43,8 +46,8 @@ const Clientes = (props) => {
     const [openPopup, setearOpenPopup] = useState(false);
     //controla la visibilidad del popup (pregunta si se confirma el borrado del ingrediente)
 
-    /* const [mensaje, setMensaje] = useState(
-        props.mensaje === constantes.INGREDIENTES_LEIDOS_CORRECTAMENTE ?
+    const [mensaje, setMensaje] = useState(
+        props.mensaje === constantes.CLIENTES_LEIDOS_CORRECTAMENTE ?
             {
                 gravedad : 'error',
                 titulo : '',
@@ -55,10 +58,10 @@ const Clientes = (props) => {
             {
                 gravedad : 'error',
                 titulo : constantes.ERROR,
-                texto : props.mensaje || constantes.ERROR_LEER_INGREDIENTES,
+                texto : props.mensaje || constantes.ERROR_LEER_CLIENTES,
                 mostrar : true
             }
-    ); */
+    );
     //controla el componente MensajeInformativo
 
     return (
@@ -66,40 +69,51 @@ const Clientes = (props) => {
             <Card sx = {{ marginTop : 1, width : '100%' }} >
                 <Grid container spacing = {1} >
                     <Grid item xs = {12}>
-                        <TableContainer sx = {{ maxHeight: 440 }} >
-                            <Table stickyHeader 
-                                // sx = {{width : 350}} 
-                                aria-labelledby = 'tituloTabla' 
-                                size = 'medium'
-                            >
-                                <CabeceraTabla
-                                    orden = {orden}
-                                    configurarOrdenamiento = {configurarOrdenamiento}
+                        {
+                            !mensaje.mostrar ? 
+                                <>
+                                    <TableContainer sx = {{ maxHeight: 440 }} >
+                                        <Table stickyHeader 
+                                            // sx = {{width : 350}} 
+                                            aria-labelledby = 'tituloTabla' 
+                                            size = 'medium'
+                                        >
+                                            <CabeceraTabla
+                                                orden = {orden}
+                                                configurarOrdenamiento = {configurarOrdenamiento}
+                                            />
+                                            <CuerpoTabla 
+                                                ordenarPor = {ordenarPor}
+                                                orden = {orden}                                                
+                                                pagina = {pagina}
+                                                filasPorPagina = {filasPorPagina}
+                                                clientes = {clientes}
+                                                setearOpenPopup = {setearOpenPopup}
+                                            />
+                                        </Table>
+                                    </TableContainer>
+                                    <PaginacionTabla 
+                                        filasPorPagina = {filasPorPagina}
+                                        setearFilasPorPagina = {setearFilasPorPagina}
+                                        pagina = {pagina}
+                                        setearPagina = {setearPagina}
+                                        cantClientes = {clientes.length}
+                                    />
+                                    <Popup 
+                                        titulo = {contantesAplicacion.TITULO_APLICACION}
+                                        texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
+                                        openPopup = {openPopup}
+                                        setearOpenPopup = {setearOpenPopup}
+                                        setMensaje = {setMensaje}
+                                    />
+                                </>
+                            :
+                                <MensajeInformativo 
+                                    mensaje = {mensaje}
+                                    setMensaje = {setMensaje}
+                                    ruta = '/clientes'
                                 />
-                                {<CuerpoTabla 
-                                    ordenarPor = {ordenarPor}
-                                    orden = {orden}                                                
-                                    pagina = {pagina}
-                                    filasPorPagina = {filasPorPagina}
-                                    clientes = {clientes}
-                                    setearOpenPopup = {setearOpenPopup}
-                                />}
-                            </Table>
-                        </TableContainer>
-                        <PaginacionTabla 
-                            filasPorPagina = {filasPorPagina}
-                            setearFilasPorPagina = {setearFilasPorPagina}
-                            pagina = {pagina}
-                            setearPagina = {setearPagina}
-                            cantClientes = {clientes.length}
-                        />
-                        {/* <Popup 
-                            titulo = {constantes.TITULO_APLICACION}
-                            texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
-                            openPopup = {openPopup}
-                            setearOpenPopup = {setearOpenPopup}
-                            setMensaje = {setMensaje}
-                        /> */}
+                        }
                     </Grid>
                 </Grid>
             </Card>

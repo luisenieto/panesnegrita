@@ -1,7 +1,7 @@
 import { Grid, TextField } from '@mui/material';
 
 //Componente que muestra la cantidad de un determinado pedido
-//El valor mínimo que se puede ingresar es 0
+//El valor mínimo que se puede ingresar es 1
 const CampoCantidad = ({ leyenda, producto, pedido, setPedido }) => {
 
     //Se ejecuta cada vez que se presiona una tecla en el campo "Cantidad"

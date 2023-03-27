@@ -1,20 +1,44 @@
-import { Container, Stack, Grid, Typography, Button, TextField, InputAdornment } from "@mui/material";
+import { Container, Grid, Typography, Button, TextField, InputAdornment } from "@mui/material";
 import { constantes } from "../../auxiliares/auxiliaresProductos";
+import { constantes as constantesAplicacion } from "../../auxiliares/auxiliaresAplicacion";
 import { obtenerProductos } from "../api/productos/bdAuxiliares";
 import Producto from "../../componentes/productos/producto";
 import { ProveedorContexto } from "../../contexto/proveedor";
 import { useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import { BsSearch } from 'react-icons/bs';
+import Popup from '../../componentes/productos/popup';
+import MensajeInformativo from "../../componentes/comunes/mensajeInformativo";
 
 const Productos = (props) => {
     const productos = props.productos;
-    //los _id se guardan como cadena
+    //los _id son cadenas
 
     const { setRedirigirA } = useContext(ProveedorContexto);
     const router = useRouter(); 
     const [cadenaBusqueda, setCadenaBusqueda] = useState('');
     //permite mostrar sólo los productos que tengan una cierta cadena en el nombre
+
+    const [openPopup, setearOpenPopup] = useState(false);
+    //controla la visibilidad del popup (pregunta si se confirma el borrado del producto)
+
+    const [mensaje, setMensaje] = useState(
+        props.mensaje === constantes.PRODUCTOS_LEIDOS_CORRECTAMENTE ?
+            {
+                gravedad : 'error',
+                titulo : '',
+                texto : '',
+                mostrar : false
+            }
+        :
+            {
+                gravedad : 'error',
+                titulo : constantes.ERROR,
+                texto : props.mensaje || constantes.ERROR_LEER_PRODUCTOS,
+                mostrar : true
+            }
+    );
+    //controla el componente MensajeInformativo
 
     //devuelve un vector con los productos cuyo nombre incluyan la cadena de búsqueda
     const buscarProductos = (productos) => {
@@ -65,13 +89,40 @@ const Productos = (props) => {
 
             <Grid container spacing = {2}>
                 {
-                    buscarProductos(productos).map(producto => {
-                        return (
-                            <Grid key = {producto._id} item xs = {6} sm = {6} md = {3}>
-                                <Producto producto = {producto} />
-                            </Grid>
+                    !mensaje.mostrar ?
+                        (
+                            <>
+                                {
+                                    buscarProductos(productos).map(producto => {
+                                        return (
+                                            <>
+                                                <Grid key = {producto._id} item xs = {6} sm = {6} md = {3}>
+                                                    <Producto 
+                                                        unProducto = {producto} 
+                                                        setearOpenPopup = {setearOpenPopup}
+                                                    />
+                                                </Grid>
+                                                <Popup 
+                                                    titulo = {constantesAplicacion.TITULO_APLICACION}
+                                                    texto = {constantes.MENSAJE_CONFIRMAR_BORRADO}
+                                                    openPopup = {openPopup}
+                                                    setearOpenPopup = {setearOpenPopup}
+                                                    setMensaje = {setMensaje}
+                                                />
+                                            </>
+                                        )
+                                    })
+                                }
+                            </>
                         )
-                    })
+                    :
+                        (
+                            <MensajeInformativo 
+                                mensaje = {mensaje}
+                                setMensaje = {setMensaje}
+                                ruta = '/productos'
+                            />
+                        )
                 }                
             </Grid>
             <Grid container spacing = {1}>

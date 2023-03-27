@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { ProveedorContexto } from "../../contexto/proveedor";
 import { useSession } from 'next-auth/react';
 
+//Componente que muestra una fila en la tabla de unidades
 const Fila = ({unaUnidad, setearOpenPopup}) => {
     const router = useRouter();
     const { setUnidadABorrar, setRedirigirA } = useContext(ProveedorContexto);

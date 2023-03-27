@@ -1,6 +1,6 @@
-import { constantes as constantesProductos} from "../../../auxiliares/auxiliaresProductos";
 import { obtenerProductos, agregarProducto, modificarProducto } from "./bdAuxiliares";
 import { ObjectId } from 'mongodb';
+import { borrarProducto } from "./bdAuxiliares";
 
 //api para el manejo de productos
 const handler = async (request, response) => {
@@ -16,20 +16,6 @@ const handler = async (request, response) => {
         const ingredientes = request.body.ingredientes;
         const pedidos = request.body.pedidos;
         const operacion = request.body.operacion;
-
-        //se verifica que el nombre del producto no esté en blanco
-        if (nombre === '') {
-            response.status(200).json({mensaje : constantesProductos.NOMBRE_EN_BLANCO});
-            return;
-        }  
-        
-        //se verifica que los ingredientes del producto tengan un id y una unidad
-        for(let i in ingredientes) {
-            if (ingredientes[i].idIngrediente === null || ingredientes[i].idUnidad === null) {
-                response.status(200).json({mensaje : constantesProductos.INGREDIENTE_UNIDAD_NULO});
-                return;
-            }
-        }
        
         if (operacion === 'A') { //alta de producto
             const resultadoAgregarProducto = await agregarProducto({foto, nombre, precio, ingredientes, pedidos});
@@ -43,9 +29,9 @@ const handler = async (request, response) => {
         }        
     }
     else if (request.method === 'DELETE') { 
-        // const ingrediente = request.body;        
-        // const resultadoBorrarIngrediente = await borrarIngrediente(ingrediente);
-        // response.status(200).json({mensaje : resultadoBorrarIngrediente});
+        const producto = request.body;        
+        const resultadoBorrarProducto = await borrarProducto(producto);
+        response.status(200).json({mensaje : resultadoBorrarProducto});
     }
 }
 
