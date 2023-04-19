@@ -1,20 +1,20 @@
 import { TableRow, TableCell, IconButton } from '@mui/material';
-import { CgPlayStopO } from 'react-icons/cg';
-import { TbTruckDelivery } from 'react-icons/tb';
-import { GiPressureCooker } from 'react-icons/gi';
 import { useSession } from 'next-auth/react';
 //import PedidosDelCliente from './pedidosDelCliente';
 import { useRouter } from 'next/router';
-import { constantes } from '../../auxiliares/auxiliaresPedidos';
-import Etiqueta from '../comunes/etiqueta';
-import { moneda } from '../../auxiliares/auxiliares';
 import axios from 'axios';
-import { formatearFecha } from '../../auxiliares/auxiliares';
+import { formatearFecha, moneda } from '../../auxiliares/auxiliares';
+import { constantes, generarEstado, generarBotonAccion } from '../../auxiliares/auxiliaresPedidos';
+import { RiEditLine } from 'react-icons/ri';
+import { GoTrashcan } from 'react-icons/go';
+import { GrLinkNext } from 'react-icons/gr';
+import { GiPreviousButton } from 'react-icons/gi';
+import { useContext } from 'react';
+import { ProveedorContexto } from '../../contexto/proveedor';
 
 const Fila = ({ unPedido, producto, setProducto, setearOpenPopup }) => {
     const router = useRouter();
-    //const [abierto, setAbierto] = useState(false);  
-    //maneja el botón flecha arriba/flecha abajo para mostrar los pedidos de un cliente
+    const { setPedidoACancelar } = useContext(ProveedorContexto);
 
     const { data: sesion, status: estaAveriguando } = useSession(); 
     //a data se le cambia el nombre por sesion, y a status por estaAveriguando
@@ -64,43 +64,59 @@ const Fila = ({ unPedido, producto, setProducto, setearOpenPopup }) => {
     //     }        
     // }    
 
-    //Genera la etiqueta que muestra el estado del pedido
-    const generarEstado = (estado) => {
-        if (estado === constantes.ESTADO_PEDIDO) {
-            return (
-                <Etiqueta variant = "ghost" color = {'error'}>
-                    {constantes.ESTADO_PEDIDO}
-                </Etiqueta>
-            )
+    const handleEditar = () => {
+        router.push(`/productos/pedidos/modificacion/${unPedido._id}`);
+    }
+
+    const handleCancelar = () => {
+        setPedidoACancelar(unPedido);
+        setearOpenPopup(true);
+    }
+
+    //Cambia el estado del pedido al estado anterior
+    const handleEstadoAnterior = async () => {
+        let pedidoUpdate;
+        switch(unPedido.estado) {
+            case constantes.ESTADO_ELABORACION :
+                pedidoUpdate = {
+                    ...unPedido, 
+                    estado : constantes.ESTADO_PEDIDO
+                };
+                break;
+            case constantes.ESTADO_TERMINADO :
+                pedidoUpdate = {
+                    ...unPedido,
+                    estado : constantes.ESTADO_ELABORACION
+                };
+                break;
         }
-        else if (estado === constantes.ESTADO_ELABORACION) {
-            return (
-                <Etiqueta variant = "ghost" color = {'warning'}>
-                    {constantes.ESTADO_ELABORACION}
-                </Etiqueta>
-            ) 
+
+        try {
+            const ruta = '/api/pedidos/';
+            const respuesta = await axios.post(ruta, {...pedidoUpdate, operacion : 'ME' });
+            const data = await respuesta.data;
+            if (data.mensaje === constantes.PEDIDO_MODIFICADO) {
+                let pedidosUpdate = producto.pedidos;
+                for(let i in pedidosUpdate) {
+                    if (pedidosUpdate[i]._id === pedidoUpdate._id) {
+                        pedidosUpdate[i] = pedidoUpdate;
+                        break;
+                    }
+                }
+
+                setProducto({
+                    ...producto, 
+                    pedidos : pedidosUpdate
+                })
+            }
         }
-        else {
-            return (
-                <Etiqueta variant = "ghost" color = {'success'}>
-                    {constantes.ESTADO_TERMINADO}
-                </Etiqueta>
-            )
+        catch(error) {
+            console.log('Error!!!');
         }
     }
 
-    //Genera el botón de acción de un pedido según el estado el que se encuentre el mismo
-    const generarBotonAccion = (estado) => {
-        switch(estado) {
-            case constantes.ESTADO_PEDIDO : return (< GiPressureCooker/>)
-            case constantes.ESTADO_ELABORACION : return (< CgPlayStopO/>)
-            case constantes.ESTADO_TERMINADO : return (< TbTruckDelivery/>)
-            default: return null;
-        }
-    }
-
-    //Cambia el estado del pedido
-    const handleAccion = async (estado) => {
+    //Cambia el estado del pedido al estado siguiente
+    const handleEstadoSiguiente = async () => {
         let pedidoUpdate;
         switch(unPedido.estado) {
             case constantes.ESTADO_PEDIDO :
@@ -125,7 +141,7 @@ const Fila = ({ unPedido, producto, setProducto, setearOpenPopup }) => {
 
         try {
             const ruta = '/api/pedidos/';
-            const respuesta = await axios.post(ruta, {...pedidoUpdate, operacion : 'M' });
+            const respuesta = await axios.post(ruta, {...pedidoUpdate, operacion : 'ME' });
             const data = await respuesta.data;
             if (data.mensaje === constantes.PEDIDO_MODIFICADO) {
                 let pedidosUpdate = producto.pedidos;
@@ -154,21 +170,48 @@ const Fila = ({ unPedido, producto, setProducto, setearOpenPopup }) => {
         }
     }
 
-
     return (
         <TableRow 
             hover                            
             sx = {{'&:last-child td, &:last-child th': { border: 0 } }}
         >
+            <TableCell sx = {{width : 5}}>                        
+                <IconButton
+                    size = 'small'
+                    disabled = { unPedido.estado !== constantes.ESTADO_PEDIDO}
+                    onClick = { handleEditar }
+                >
+                    <RiEditLine />
+                </IconButton>                        
+            </TableCell>  
+            <TableCell sx = {{width : 5}}>
+                <IconButton
+                    size = 'small'
+                    disabled = { unPedido.estado !== constantes.ESTADO_PEDIDO}
+                    onClick = { handleCancelar }
+                >
+                    <GoTrashcan />
+                </IconButton>
+            </TableCell>
             <TableCell align = 'left' sx = {{maxWidth : 50}}>{`${unPedido.apellido}, ${unPedido.nombre}`}</TableCell>
             <TableCell align = 'center' sx = {{maxWidth : 20}}>{unPedido.cantidad}</TableCell>
             <TableCell align = 'center' sx = {{maxWidth : 30}}>{moneda(unPedido.importe)}</TableCell>
             <TableCell align = 'center' sx = {{maxWidth : 30}}>{formatearFecha(unPedido.fecha)}</TableCell> 
             <TableCell align = 'center' sx = {{maxWidth : 30}}>{generarEstado(unPedido.estado)}</TableCell>
-            <TableCell align = 'left' sx = {{width : 30}}>
+            <TableCell sx = {{width : 5}}>                        
                 <IconButton
                     size = 'small'
-                    onClick = {() => handleAccion(unPedido.estado)}
+                    disabled = { unPedido.estado == constantes.ESTADO_PEDIDO }
+                    onClick = { handleEstadoAnterior }
+                >
+                    <GiPreviousButton />
+                </IconButton>                        
+            </TableCell>  
+            <TableCell sx = {{width : 5}}>
+                <IconButton
+                    size = 'small'
+                    disabled = { unPedido.estado === constantes.ESTADO_ENTREGADO }
+                    onClick = { handleEstadoSiguiente }
                 >
                     {
                         generarBotonAccion(unPedido.estado)

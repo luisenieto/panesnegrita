@@ -1,11 +1,8 @@
 import { TableRow, TableCell, IconButton } from '@mui/material';
 import {RiEditLine} from 'react-icons/ri';
 import {GoTrashcan} from 'react-icons/go';
-import { MdKeyboardArrowUp } from 'react-icons/md';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-import { useState } from 'react';
+import { BsCart2 } from 'react-icons/bs';
 import { useSession } from 'next-auth/react';
-import PedidosDelCliente from './pedidosDelCliente';
 import { formatearFecha } from '../../auxiliares/auxiliares';
 import { useRouter } from 'next/router';
 import { ProveedorContexto } from '../../contexto/proveedor';
@@ -14,9 +11,6 @@ import { useContext } from 'react';
 const Fila = ({ unCliente, setearOpenPopup }) => {
     const router = useRouter();
     const { setClienteABorrar, setRedirigirA } = useContext(ProveedorContexto);
-
-    const [abierto, setAbierto] = useState(false);  
-    //maneja el botón flecha arriba/flecha abajo para mostrar los pedidos de un cliente
 
     const { data: sesion, status: estaAveriguando } = useSession(); 
     //a data se le cambia el nombre por sesion, y a status por estaAveriguando
@@ -28,11 +22,10 @@ const Fila = ({ unCliente, setearOpenPopup }) => {
         //status: indica si NextJS está todavía averiguando si el usuario está logueado o no
             //es una enumeración que puede valer "loading", "authenticated" o "unauthenticated"
 
-    //muestra los pedidos de un cliente
-    const mostrarPedidos = () => {
-        if (!abierto) {
-        }
-        setAbierto(!abierto);  
+    //gestiona los pedidos del cliente
+    const handlePedidos = (_id) => {
+        setRedirigirA(`/clientes/pedidos/${_id}`);
+        router.push(`/clientes/pedidos/${_id}`);
     }
 
     //permite borrar un cliente (si se está logueado)
@@ -69,60 +62,42 @@ const Fila = ({ unCliente, setearOpenPopup }) => {
     
 
     return (
-        <>
-            <TableRow 
-                hover                            
-                sx = {{'&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <TableCell sx = {{width : 5}}>
-                    <IconButton
-                        aria-label = "expand row"
-                        size = "small"
-                        onClick = {mostrarPedidos}
-                    >
-                        {abierto ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
-                    </IconButton>                    
-                </TableCell>
-                <TableCell sx = {{width : 5}}>                        
-                    <IconButton
-                        size = 'small'
-                        onClick = {handleEditar}
-                    >
-                        <RiEditLine />
-                    </IconButton>                        
-                </TableCell>  
-                <TableCell sx = {{width : 5}}>
-                    <IconButton
-                        size = 'small'
-                        onClick = {handleBorrar}
-                    >
-                        <GoTrashcan />
-                    </IconButton>
-                </TableCell> 
-                <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.apellido}</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.nombre}</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.referencia}</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.telefono}</TableCell> 
-                <TableCell align = 'left' sx = {{maxWidth : 40}}>{formatearFecha(unCliente.fechaNacimiento)}</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 60}}>{unCliente.correo}</TableCell>                 
-            </TableRow>
-            <PedidosDelCliente 
-                abierto = {abierto}
-                pedidos = {unCliente.pedidos}  
-            />
-
-            {/* <TableRow>
-                <TableCell style = {{ paddingBottom: 0, paddingTop: 0 }} colSpan = {9}>
-                    <Collapse in = {abierto} timeout = "auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <PedidosDelCliente 
-                                pedidos = {unCliente.pedidos}                                
-                            />
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>   */}
-        </>
+        <TableRow 
+            hover                            
+            sx = {{'&:last-child td, &:last-child th': { border: 0 } }}
+        >
+            <TableCell sx = {{width : 5}}>                        
+                <IconButton
+                    size = 'small'
+                    onClick = {handleEditar}
+                >
+                    <RiEditLine />
+                </IconButton>                        
+            </TableCell>  
+            <TableCell sx = {{width : 5}}>
+                <IconButton
+                    size = 'small'
+                    onClick = {handleBorrar}
+                >
+                    <GoTrashcan />
+                </IconButton>
+            </TableCell> 
+            <TableCell sx = {{width : 5}}>
+                <IconButton
+                    size = 'small'
+                    disabled = { unCliente.pedidos.length === 0}
+                    onClick = {evento => handlePedidos(unCliente._id)}
+                >
+                    <BsCart2 />
+                </IconButton>
+            </TableCell> 
+            <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.apellido}</TableCell>
+            <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.nombre}</TableCell>
+            <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.referencia}</TableCell>
+            <TableCell align = 'left' sx = {{maxWidth : 50}}>{unCliente.telefono}</TableCell> 
+            <TableCell align = 'left' sx = {{maxWidth : 40}}>{formatearFecha(unCliente.fechaNacimiento)}</TableCell>
+            <TableCell align = 'left' sx = {{maxWidth : 60}}>{unCliente.correo}</TableCell>                 
+        </TableRow>
     )
 }
 

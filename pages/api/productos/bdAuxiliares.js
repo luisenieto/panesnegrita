@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import { obtenerCliente } from "../clientes/bdAuxiliares";
 import { obtenerPedido } from "../pedidos/bdAuxiliares";
 import { existenPedidosConEsteProducto } from "../pedidos/bdAuxiliares";
+import { obtenerIngredienteEnStock } from "../ingredientes/bdAuxiliares";
 
 //*************************** Funciones de ABM y Listado ************************* */
 
@@ -600,20 +601,7 @@ const obtenerEquivalencia = async (cliente, _id, idUnidadEquivalente) => {
     return null;
 }
 
-//Obtiene el ingrediente en stock
-//El producto podría ser un combo, con lo cual sus ingredientes serían otros productos
-//Entonces se debe verificar que el ingrediente del producto sea un ingrediente propiamente dicho:
-//si es, se lo devuelve, y si no se devuelve null
-//Es un método auxiliar llamado por analizarUnidades() y actualizarIngredientes(), por eso se lo debe exportar
-//Parámetros:
-    //cliente: conexión a la BD
-    //idIngrediente: id del ingrediente que se busca
-//Devuelve:
-    //objeto Ingrediente correspondiente al id especificado, o null si no se encuentra uno
-export const obtenerIngredienteEnStock = async (cliente, idIngrediente) => {
-    const ingredientes = await cliente.db().collection('ingredientes').find({_id: {$eq: idIngrediente}}).toArray(); 
-    return ingredientes.length === 1 ? ingredientes[0] : null;
-}
+
 
 //Dado un producto identificado por su _id,
 //devuelve el objeto Producto correspondiente, el cual se busca en el vector "productos"

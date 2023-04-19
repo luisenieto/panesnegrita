@@ -9,11 +9,6 @@ const CabeceraTabla = ({ orden, configurarOrdenamiento }) => {
     return (
         <TableHead>
             <TableRow>                                
-                {/* <TableCell sx = {{
-                        width : 5, 
-                        backgroundColor : tema.palette.primary.main,
-                    }} 
-                />
                 <TableCell sx = {{
                         width : 5, 
                         backgroundColor : tema.palette.primary.main,
@@ -23,7 +18,7 @@ const CabeceraTabla = ({ orden, configurarOrdenamiento }) => {
                         width : 5, 
                         backgroundColor : tema.palette.primary.main,
                     }} 
-                /> */}
+                />                
                 <TableCell 
                     align = 'left'
                     sortDirection = {orden} 
@@ -104,16 +99,16 @@ const CabeceraTabla = ({ orden, configurarOrdenamiento }) => {
                 >
                     {constantes.ESTADO}
                 </TableCell> 
-                <TableCell 
-                    align = 'left' 
-                    sx = {{
-                        maxWidth : 30,
+                <TableCell sx = {{
+                        width : 5, 
                         backgroundColor : tema.palette.primary.main,
-                        color : tema.palette.primary.contrastText
-                    }}
-                >
-                    {constantes.ACCION}
-                </TableCell>                           
+                    }} 
+                />
+                <TableCell sx = {{
+                        width : 5, 
+                        backgroundColor : tema.palette.primary.main,
+                    }} 
+                />
             </TableRow>
         </TableHead>
     )

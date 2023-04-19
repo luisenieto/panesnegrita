@@ -34,8 +34,11 @@ const resultado = (formato, clave = '.00') => {
 //Devuelve:
     //fecha con el formato 'DD/MM/YYYY'
 export const formatearFecha = (fecha) => {
-    return moment(fecha).format('DD/MM/YYYY');
+    return fecha ? moment(fecha).format('DD/MM/YYYY') : null;
 }
+
+
+
 
 //Devuelve la proporción como un número float o int
 //Si textoProporcion vale ".7", le agrega un 0 ("0.7"), lo transforma a float y lo devuelve

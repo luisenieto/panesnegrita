@@ -3,6 +3,8 @@ import { constantes as constantesConexion } from "../../../auxiliares/auxiliares
 import { constantes as constantesClientes } from "../../../auxiliares/auxiliaresClientes";
 import { constantes as constantesPedidos } from "../../../auxiliares/auxiliaresPedidos";
 import { existenPedidosConEsteCliente } from "../pedidos/bdAuxiliares";
+import { obtenerPedido } from "../pedidos/bdAuxiliares";
+import { obtenerProducto } from "../productos/bdAuxiliares";
 import { ObjectId } from 'mongodb';
 
 //*************************** Funciones de ABM y Listado ************************* */
@@ -226,6 +228,23 @@ export const obtenerClientes = async () => {
 
 //Obtiene el cliente con el _id especificado
 //También devuelve la lista de clientes
+//Todos los clientes tienen un vector de pedidos donde sólo se guardan los ids de los mismos
+//Entonces, para cada cliente, se arma un vector para los pedidos que tiene la forma:
+//[
+//  {
+//      _id: id del pedido,
+//      idCliente: id del cliente (redundante ya que se tiene el cliente. Este dato viene de los pedidos),
+//      idProducto: id del producto,
+//      cantidad: cantidad del producto que forma el pedido,
+//      importe: importe del pedido,
+//      fecha: fecha en que se realizó el pedido,
+//      estado: estado del pedido,
+//      nombre: nombre del producto
+//  },
+//  {
+//      ...    
+//  }
+//]
 //Para obtener el cliente:
     //1. Verifica que se haya especificado un _id
     //2. Si se especificó un _id, se conecta a la BD
@@ -263,14 +282,37 @@ export const obtenerClienteParaModificar = async (_id) => {
     const bd = resultadoConectarBD.cliente.db();
     try {
         let clientes = await bd.collection('clientes').find({_id: {$eq: _id}}).toArray(); 
-        let todosLosClientes = await bd.collection('clientes').find().toArray(); 
+        let cliente = clientes.length === 1 ? clientes[0] : null;
+        //si clientes.length === 1 es porque se encontró un único cliente
+
+        if (cliente) { //si existe el cliente, se arma su vector de pedidos
+            let todosLosPedidos = await bd.collection('pedidos').find().toArray();
+            //sirve para armar el vector de pedidos de los clientes
+
+            let todosLosProductos = await bd.collection('productos').find().toArray(); 
+            //sirve para armar el vector de pedidos de los clientes
+
+            const pedidos = cliente.pedidos; //tiene sólo los ids de los pedidos de un cliente
+            let pedidosUpdate = [];
+            for(let j in pedidos) { //se recorren los pedidos de cada cliente
+                const datosPedido = obtenerPedido(pedidos[j], todosLosPedidos);
+                const datosProducto = obtenerProducto(datosPedido.idProducto, todosLosProductos);
+                pedidosUpdate.push({
+                    ...datosPedido,
+                    nombre : datosProducto.nombre
+                });
+            }
+            cliente.pedidos = pedidosUpdate;            
+        }
+        let todosLosClientes = await bd.collection('clientes').find().toArray();
         resultadoConectarBD.cliente.close();
+                
         return {
             mensaje : constantesClientes.CLIENTES_LEIDOS_CORRECTAMENTE,
-            cliente : clientes.length === 1 ? clientes[0] : null,
+            cliente : cliente,
             clientes : todosLosClientes
         } 
-        //si clientes.length === 1 es porque se encontró un único cliente
+        
     }
     catch(error) {
         resultadoConectarBD.cliente.close();

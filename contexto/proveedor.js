@@ -13,6 +13,9 @@ const Proveedor = ({ children }) => {
     const [clientes, setClientes] = useState([]);
     //lista de todos los clientes
 
+    const [productos, setProductos] = useState([]);
+    //lista de todos los productos
+
     const [unidadABorrar, setUnidadABorrar] = useState(null);
     //unidad que se está por borrar (sirve para el popup que borra una unidad)
 
@@ -24,6 +27,9 @@ const Proveedor = ({ children }) => {
 
     const [productoABorrar, setProductoABorrar] = useState(null);
     //producto que se está por borrar (sirve para el popup que borra un producto)
+
+    const [pedidoACancelar, setPedidoACancelar] = useState(null);
+    //pedido que se está por cancelar (sirve para el popup que cancelar un pedido)
 
     const [redirigirA, setRedirigirA] = useState(null);
     //sirve para redirigir a una página en particular
@@ -39,6 +45,8 @@ const Proveedor = ({ children }) => {
             setIngredientes,
             clientes, 
             setClientes,
+            productos, 
+            setProductos,
             unidadABorrar, 
             setUnidadABorrar,
             ingredienteABorrar, 
@@ -47,6 +55,8 @@ const Proveedor = ({ children }) => {
             setClienteABorrar,
             productoABorrar, 
             setProductoABorrar,
+            pedidoACancelar, 
+            setPedidoACancelar,
             redirigirA, 
             setRedirigirA
         }}>

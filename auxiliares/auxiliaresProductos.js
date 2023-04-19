@@ -21,13 +21,13 @@ const constantes = {
     MENU_BORRAR : 'Borrar',
     MENU_VER_PEDIDOS : 'Ver pedidos',
     MODIFICACION_PRODUCTO : 'Modificación de producto',
-    MODIFICAR_INGREDIENTE : 'Modificar ingrediente',
+    MODIFICAR_INGREDIENTE : 'Modificar ingrediente',    
     NOMBRE : 'Nombre',
     NOMBRE_EN_BLANCO : 'El nombre del producto no puede estar en blanco',  
     NUEVO_PEDIDO : 'Nuevo Pedido',
     NUEVO_PRODUCTO : 'Nuevo Producto',
     PEDIDO : 'Nuevo pedido',    
-    PEDIDO_CREADO : 'Se creó el pedido correctamente',
+    PEDIDO_CREADO : 'Se creó el pedido correctamente',    
     PRECIO : 'Precio',
     PRECIO_INCORRECTO : 'El precio es incorrecto',
     PRODUCTO_BORRADO : 'Se borró el producto',
@@ -52,6 +52,39 @@ const constantes = {
 export {    
     constantes
 };
+
+
+//Dada una cadena que representa un producto de la forma "nombre", 
+//devuelve el idProducto correspondiente (como un String)
+//Si no hay un producto con esos datos, devuelve null
+//Parámetros:
+    //cadenaProducto: cadena que representa un producto
+    //productos: vector de productos
+//Devuelve:
+    //id del producto (como String), o null
+export const obtenerIdProducto = (cadenaProducto, productos) => {
+    for(let i in productos) {
+        if (cadenaProducto === productos[i].nombre)
+            return productos[i]._id;
+    }
+    return null;
+}
+
+
+//Dado el idProducto, devuelve una cadena de la forma "nombre"
+//Si no hay un producto con el idProducto especificado, devuelve null
+//Parámetros:
+    //idProducto: id del producto a buscar (como String)
+    //productos: vector de productos
+//Devuelve:
+    //cadena de la forma "nombre" (si se encuentra el producto), o null
+export const obtenerCadenaProducto = (idProducto, productos) => {
+    for(let i in productos) {
+        if (idProducto === productos[i]._id)
+            return productos[i].nombre;
+    }
+    return null;
+}
 
 //Borra la foto elegida del vector
 //Suponer que se selecciona el archivo "1" como imagen para el producto

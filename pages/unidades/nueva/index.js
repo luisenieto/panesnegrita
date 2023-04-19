@@ -6,7 +6,8 @@ import Equivalencias from '../../../componentes/unidades/equivalencias';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@emotion/react';
 import { useRouter } from 'next/router';
-import MensajeInformativo from '../../../componentes/unidades/mensajeInformativo';
+//import MensajeInformativo from '../../../componentes/unidades/mensajeInformativo';
+import MensajeInformativo from '../../../componentes/comunes/mensajeInformativo';
 import axios from 'axios';
 import { constantes } from '../../../auxiliares/auxiliaresUnidades';
 import { controlarSiSeEstaLogueado } from '../../../lib/auth';
@@ -97,6 +98,7 @@ const NuevaUnidad = (props) => {
                     <MensajeInformativo 
                         mensaje = {mensaje}
                         setMensaje = {setMensaje}
+                        ruta = '/unidades'
                     />
                     <Equivalencias 
                         leyenda = 'Equivalencias' 

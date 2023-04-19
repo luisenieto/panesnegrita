@@ -28,7 +28,7 @@ const CuerpoTabla = ({ordenarPor, orden, pagina, filasPorPagina, producto, setPr
                         key = {i}
                         producto = {producto}
                         setProducto = {setProducto}
-                        //setearOpenPopup = {setearOpenPopup}
+                        setearOpenPopup = {setearOpenPopup}
                     />
                 ))                
             }

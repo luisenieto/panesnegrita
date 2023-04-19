@@ -8,7 +8,8 @@ import { useState, useContext, useEffect } from 'react';
 import { ProveedorContexto } from "../../../contexto/proveedor";
 import { useTheme } from "@emotion/react";
 import { constantes } from "../../../auxiliares/auxiliaresUnidades";
-import MensajeInformativo from '../../../componentes/unidades/mensajeInformativo';
+//import MensajeInformativo from '../../../componentes/unidades/mensajeInformativo';
+import MensajeInformativo from '../../../componentes/comunes/mensajeInformativo';
 import { obtenerUnidadParaModificar } from "../../api/unidades/bdAuxiliares";
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
@@ -111,6 +112,7 @@ const ModificacionUnidad = (props) => {
                                 <MensajeInformativo 
                                     mensaje = {mensaje}
                                     setMensaje = {setMensaje}
+                                    ruta = '/unidades'
                                 />                            
                                 <Equivalencias 
                                     leyenda = {constantes.EQUIVALENCIAS} 

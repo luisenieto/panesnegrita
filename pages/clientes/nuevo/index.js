@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Box, Container, Paper, Grid, Typography } from '@mui/material';
-import DetalleCliente from '../../../componentes/clientes/detalleCliente';
+import { Container, Paper, Grid } from '@mui/material';
+//import DetalleCliente from '../../../componentes/clientes/detalleCliente';
 //import FotoCliente from '../../../componentes/clientes/fotoCliente';
 import EtiquetaTitulo from '../../../componentes/comunes/etiquetaTitulo';
 import EtiquetaEstado from '../../../componentes/comunes/etiquetaEstado';

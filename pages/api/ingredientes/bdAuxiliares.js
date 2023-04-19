@@ -5,7 +5,6 @@ import { constantes as constantesIngredientes } from "../../../auxiliares/auxili
 import { constantes as constantesProductos } from "../../../auxiliares/auxiliaresProductos";
 import { ObjectId } from 'mongodb';
 import { existeProductoConEsteIngrediente } from "../productos/bdAuxiliares";
-//import { obtenerNombreUnidad } from "../../../auxiliares/auxiliaresUnidades";
 
 
 //*************************** Funciones de ABM y Listado ************************* */
@@ -284,6 +283,40 @@ export const obtenerIngredienteParaModificar = async (_id) => {
 
 //*************************** Funciones auxiliares ************************* */
 
+//Agrega al vector de ingredientes el nombre de cada unidad
+//Parámetros:
+    //ingredientes: vector con todos los ingredientes:
+        //{
+            //_id : xxx,
+            //nombre : xxx,
+            //stock: xxx,
+            //stockMinimo : xxx,
+            //idUnidad : xxx
+        //}
+    //unidades: vector con todas las unidades
+//Devuelve: 
+    //vector con todos los ingredientes con el agregado del atributo para el nombre de la unidad:
+        //{
+            //_id : xxx,
+            //nombre : xxx,
+            //stock: xxx,
+            //stockMinimo : xxx,
+            //idUnidad : xxx,
+            //nombreUnidad : xxx
+        //}    
+const agregarNombreUnidades = (ingredientes, unidades) => {
+    let ingredientesUpdate = [];
+
+    for(let i in ingredientes) 
+        ingredientesUpdate.push({
+            ...ingredientes[i], 
+            nombreUnidad : obtenerNombreUnidad(ingredientes[i].idUnidad, unidades)
+        });
+    
+    return ingredientesUpdate;
+}
+
+
 //Verifica si existe un ingrediente con el nombre especificado
 //Es un método auxiliar que lo llama agregarIngrediente() y modificarIngrediente() (por eso no se lo exporta)
 //Se puede usar cuando se está creando un ingrediente (_id sin definir) o cuando se está modificando un ingrediente (_id definido)
@@ -384,7 +417,41 @@ export const existeIngredienteConEstaUnidad = async (cliente, idUnidad) => {
 
     return ingredientesConEstaUnidad.length > 0 ? constantesIngredientes.INGREDIENTES_CON_LA_UNIDAD : constantesIngredientes.INGREDIENTES_SIN_LA_UNIDAD;             
 }
-    
+
+//Obtiene el ingrediente en stock
+//El producto podría ser un combo, con lo cual sus ingredientes serían otros productos
+//Entonces se debe verificar que el ingrediente del producto sea un ingrediente propiamente dicho:
+//si es, se lo devuelve, y si no se devuelve null
+//Es un método auxiliar llamado por analizarUnidades() y actualizarIngredientes(), por eso se lo debe exportar
+//Parámetros:
+    //cliente: conexión a la BD
+    //idIngrediente: id del ingrediente que se busca
+//Devuelve:
+    //objeto Ingrediente correspondiente al id especificado, o null si no se encuentra uno
+export const obtenerIngredienteEnStock = async (cliente, idIngrediente) => {
+    const ingredientes = await cliente.db().collection('ingredientes').find({_id: {$eq: idIngrediente}}).toArray(); 
+    return ingredientes.length === 1 ? ingredientes[0] : null;
+}
+
+
+//Dada una unidad identificada por su _id, y el conjunto de unidades,
+//devuelve el nombre de la misma
+//Si no hay una unidad con ese _id, devuelve constantesUnidades.INDEFINIDA
+//Es un método auxiliar llamado por agregarNombreUnidades() (por eso no se lo exporta)
+//No se usa el método obtenerNombreUnidad() definido en auxiliaresUnidades porque ese trabaja con strings para los _id
+//Parámetros:
+    //_id: _id de la unidad (es un ObjectId)
+    //unidades: vector de unidades
+//Devuelve:
+    //el nombre de la unidad || constantesUnidades.INDEFINIDA
+const obtenerNombreUnidad = (_id, unidades) => {
+    for(let i in unidades) {
+        if (unidades[i]._id.equals(_id))
+            return unidades[i].nombre;
+    }
+    return constantesUnidades.INDEFINIDA;
+}
+
 //Verifica que:
     //1. El nombre del ingrediente no esté en blanco 
     //2. La la cantidad en stock sea >= 0 
@@ -423,58 +490,4 @@ const verificarIngrediente = (nombre, stock, stockMinimo, idUnidad) => {
     }
 
     return constantesIngredientes.VERIFICACION_OK;
-}
-
-
-//Agrega al vector de ingredientes el nombre de cada unidad
-//Parámetros:
-    //ingredientes: vector con todos los ingredientes:
-        //{
-            //_id : xxx,
-            //nombre : xxx,
-            //stock: xxx,
-            //stockMinimo : xxx,
-            //idUnidad : xxx
-        //}
-    //unidades: vector con todas las unidades
-//Devuelve: 
-    //vector con todos los ingredientes con el agregado del atributo para el nombre de la unidad:
-        //{
-            //_id : xxx,
-            //nombre : xxx,
-            //stock: xxx,
-            //stockMinimo : xxx,
-            //idUnidad : xxx,
-            //nombreUnidad : xxx
-        //}    
-const agregarNombreUnidades = (ingredientes, unidades) => {
-    let ingredientesUpdate = [];
-
-    for(let i in ingredientes) 
-        ingredientesUpdate.push({
-            ...ingredientes[i], 
-            nombreUnidad : obtenerNombreUnidad(ingredientes[i].idUnidad, unidades)
-        });
-    
-    return ingredientesUpdate;
-}
-
-
-
-//Dada una unidad identificada por su _id, y el conjunto de unidades,
-//devuelve el nombre de la misma
-//Si no hay una unidad con ese _id, devuelve constantesUnidades.INDEFINIDA
-//Es un método auxiliar llamado por agregarNombreUnidades() (por eso no se lo exporta)
-//No se usa el método obtenerNombreUnidad() definido en auxiliaresUnidades porque ese trabaja con strings para los _id
-//Parámetros:
-    //_id: _id de la unidad (es un ObjectId)
-    //unidades: vector de unidades
-//Devuelve:
-    //el nombre de la unidad || constantesUnidades.INDEFINIDA
-const obtenerNombreUnidad = (_id, unidades) => {
-    for(let i in unidades) {
-        if (unidades[i]._id.equals(_id))
-            return unidades[i].nombre;
-    }
-    return constantesUnidades.INDEFINIDA;
 }

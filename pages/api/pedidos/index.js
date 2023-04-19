@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { agregarPedido, modificarPedido } from './bdAuxiliares';
+import { agregarPedido, cancelarPedido, modificarPedido } from './bdAuxiliares';
 
 //api para el manejo de pedidos
 const handler = async (request, response) => {
@@ -18,20 +18,26 @@ const handler = async (request, response) => {
         const operacion = request.body.operacion;               
        
         if (operacion === 'A') { //alta de pedido
-            const resultadoAgregarPedido = await agregarPedido({idCliente, idProducto, cantidad, importe, fecha, estado});
+            const resultadoAgregarPedido = await agregarPedido({ idCliente, idProducto, cantidad, importe, fecha, estado });
             response.status(200).json({mensaje : resultadoAgregarPedido});
         }
-        else { //modificación de pedido
-            const _id = new ObjectId(request.body._id);
+        else if (operacion === 'M') { //modificación de pedido (cliente, producto, cantidad, importe)
+            const _id = new ObjectId(request.body._id);            
             // request.body._id es un string. Cuando se busca en la BD por _id, el mismo debe ser un ObjectId            
-            const resultadoModificarPedido = await modificarPedido({_id, idCliente, idProducto, cantidad, importe, fecha, estado});
+            const resultadoModificarPedido = await modificarPedido({ _id, idCliente, idProducto, cantidad, importe, fecha, estado });            
             response.status(200).json({mensaje : resultadoModificarPedido});
         }        
+        else { //modificación sólo del estado (operacion === 'ME')
+            const _id = new ObjectId(request.body._id);            
+            // request.body._id es un string. Cuando se busca en la BD por _id, el mismo debe ser un ObjectId            
+            const resultadoModificarPedido = await modificarPedido({ _id, idCliente, idProducto, cantidad, importe, fecha, estado });            
+            response.status(200).json({mensaje : resultadoModificarPedido});
+        }
     }
     else if (request.method === 'DELETE') { 
-        // const ingrediente = request.body;        
-        // const resultadoBorrarIngrediente = await borrarIngrediente(ingrediente);
-        // response.status(200).json({mensaje : resultadoBorrarIngrediente});
+        const pedido = request.body;        
+        const resultadoCancelarPedido = await cancelarPedido(pedido);
+        response.status(200).json({mensaje : resultadoCancelarPedido});
     }
 }
 

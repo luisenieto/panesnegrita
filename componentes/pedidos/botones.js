@@ -1,56 +1,97 @@
 import { Grid, Button } from "@mui/material";
 import { useTheme } from '@emotion/react';
-import { constantes } from "../../auxiliares/auxiliaresProductos";
+import { constantes } from "../../auxiliares/auxiliaresPedidos";
 import { useRouter } from 'next/router';
 import axios from "axios";
 
-//Componente que muestra los botones "Aceptar" y "Cancelar" cuando se hace un nuevo pedido de un producto
-const Botones = ({ pedido, setMensaje }) => {
+//Componente que muestra los botones "Aceptar" y "Cancelar" cuando:
+    // se hace un nuevo pedido de un producto (operación === 'A')
+    // se modifica un pedido (operación === 'M')
+const Botones = ({ pedido, setMensaje, ruta, operacion }) => {
 
     const tema = useTheme();
     const router = useRouter();
 
     const handleCancelar = async () => {
-        router.push('/productos');
+        router.push(ruta);
     }
 
     const handleAceptar = async () => {
         const ruta = '/api/pedidos/';
 
-        try {
-            const respuesta = await axios.post(ruta, {...pedido, operacion : 'A' });
-            const data = await respuesta.data;
-            if (data.mensaje === constantes.PEDIDO_CREADO) {                
-                setMensaje({
-                    gravedad : 'success',
-                    titulo : constantes.NUEVO_PEDIDO,
-                    texto : data.mensaje,
-                    mostrar : true
-                });
+        if (operacion === 'A') {
+            try {
+                const respuesta = await axios.post(ruta, {...pedido, operacion : 'A' });
+                const data = await respuesta.data;
+                if (data.mensaje === constantes.PEDIDO_CREADO) {                
+                    setMensaje({
+                        gravedad : 'success',
+                        titulo : constantes.NUEVO_PEDIDO,
+                        texto : data.mensaje,
+                        mostrar : true
+                    });
+                }
+                else {
+                    setMensaje({
+                        gravedad : 'error',
+                        titulo : constantes.NUEVO_PEDIDO,
+                        texto : data.mensaje,
+                        mostrar : true
+                    });
+                }
             }
-            else {
+            catch(error) {
+                //Si está definido error.response es porque se hizo el pedido y el servidor respondió con un estado !== 200
+                //se puede ver error.response.data, error.response.status
+                //Si está definido error.request es porque se hizo el pedido pero no se recibió una respuesta
+                //se puede ver error.request
+                //Y si no, el error puede ser por otra cosa
+                //se puede ver error.message
                 setMensaje({
                     gravedad : 'error',
                     titulo : constantes.NUEVO_PEDIDO,
-                    texto : data.mensaje,
+                    //texto : error.response.data.mensaje || error.message,
+                    texto : 'error',
                     mostrar : true
-                });
+                });                               
             }
         }
-        catch(error) {
-            //Si está definido error.response es porque se hizo el pedido y el servidor respondió con un estado !== 200
-            //se puede ver error.response.data, error.response.status
-            //Si está definido error.request es porque se hizo el pedido pero no se recibió una respuesta
-            //se puede ver error.request
-            //Y si no, el error puede ser por otra cosa
-            //se puede ver error.message
-            setMensaje({
-                gravedad : 'error',
-                titulo : constantes.NUEVO_PEDIDO,
-                //texto : error.response.data.mensaje || error.message,
-                texto : 'error',
-                mostrar : true
-            });                               
+        else { //operacion === 'M'
+            try {
+                const respuesta = await axios.post(ruta, {...pedido, operacion : 'M' });
+                const data = await respuesta.data;                
+                if (data.mensaje === constantes.PEDIDO_MODIFICADO) {                
+                    setMensaje({
+                        gravedad : 'success',
+                        titulo : constantes.MODIFICAR_PEDIDO,
+                        texto : data.mensaje,
+                        mostrar : true
+                    });
+                }
+                else {
+                    setMensaje({
+                        gravedad : 'error',
+                        titulo : constantes.MODIFICAR_PEDIDO,
+                        texto : data.mensaje,
+                        mostrar : true
+                    });
+                }
+            }
+            catch(error) {
+                //Si está definido error.response es porque se hizo el pedido y el servidor respondió con un estado !== 200
+                //se puede ver error.response.data, error.response.status
+                //Si está definido error.request es porque se hizo el pedido pero no se recibió una respuesta
+                //se puede ver error.request
+                //Y si no, el error puede ser por otra cosa
+                //se puede ver error.message
+                setMensaje({
+                    gravedad : 'error',
+                    titulo : constantes.MODIFICAR_PEDIDO,
+                    //texto : error.response.data.mensaje || error.message,
+                    texto : 'error',
+                    mostrar : true
+                });                               
+            }
         }
     }
 

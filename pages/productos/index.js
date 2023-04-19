@@ -4,7 +4,7 @@ import { constantes as constantesAplicacion } from "../../auxiliares/auxiliaresA
 import { obtenerProductos } from "../api/productos/bdAuxiliares";
 import Producto from "../../componentes/productos/producto";
 import { ProveedorContexto } from "../../contexto/proveedor";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import { BsSearch } from 'react-icons/bs';
 import Popup from '../../componentes/productos/popup';
@@ -21,7 +21,7 @@ const Productos = (props) => {
 
     const [openPopup, setearOpenPopup] = useState(false);
     //controla la visibilidad del popup (pregunta si se confirma el borrado del producto)
-
+    
     const [mensaje, setMensaje] = useState(
         props.mensaje === constantes.PRODUCTOS_LEIDOS_CORRECTAMENTE ?
             {
@@ -39,6 +39,7 @@ const Productos = (props) => {
             }
     );
     //controla el componente MensajeInformativo
+    
 
     //devuelve un vector con los productos cuyo nombre incluyan la cadena de búsqueda
     const buscarProductos = (productos) => {
@@ -50,22 +51,6 @@ const Productos = (props) => {
             <Typography variant = "h4" sx = {{ mb: 3, mt: 5 }}>
                 {constantes.PRODUCTOS}
             </Typography>            
-            {/* <Stack direction = "row" flexWrap = "wrap-reverse" alignItems = "center" justifyContent = "flex-end" sx = {{ mb: 5 }}>
-                <Filtro 
-                    mostrarFiltro = {mostrarFiltro}
-                    setMostrarFiltro = {setMostrarFiltro}
-                    opciones_filtrado = {OPCIONES_FILTRADO}
-                    filtroElegido = {filtroElegido}
-                    setFiltroElegido = {setFiltroElegido}
-                    setOPCIONES_ORDENAMIENTO = {setOPCIONES_ORDENAMIENTO}
-                />                    
-                <Ordenamiento 
-                    opciones_ordenamiento = {OPCIONES_ORDENAMIENTO}
-                    ordenamientoElegido = {ordenamientoElegido}
-                    setOrdenamientoElegido = {setOrdenamientoElegido}
-                />
-            </Stack> */}
-
             <Grid container spacing = {1}>
                 <TextField 
                     id = "buscar-por-nombre"
@@ -95,8 +80,8 @@ const Productos = (props) => {
                                 {
                                     buscarProductos(productos).map(producto => {
                                         return (
-                                            <>
-                                                <Grid key = {producto._id} item xs = {6} sm = {6} md = {3}>
+                                            <Fragment key = {producto._id}>
+                                                <Grid item xs = {6} sm = {6} md = {3}>
                                                     <Producto 
                                                         unProducto = {producto} 
                                                         setearOpenPopup = {setearOpenPopup}
@@ -109,7 +94,7 @@ const Productos = (props) => {
                                                     setearOpenPopup = {setearOpenPopup}
                                                     setMensaje = {setMensaje}
                                                 />
-                                            </>
+                                            </Fragment>
                                         )
                                     })
                                 }

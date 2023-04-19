@@ -20,7 +20,7 @@ const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
         try {
             const respuestaBorrar = await axios.delete(ruta, {data : clienteABorrar});
             const dataBorrar = await respuestaBorrar.data;
-            console.log(dataBorrar.mensaje);
+            
             if (dataBorrar.mensaje === constantes.CLIENTE_BORRADO) { //se pudo borrar el cliente
                 //ver el tema del refresco
                 setMensaje({
