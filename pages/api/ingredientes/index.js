@@ -14,9 +14,9 @@ const handler = async (request, response) => {
     }
     else if (request.method === 'POST') {
         const nombre = request.body.nombre;
-        const stock = parseInt(request.body.stock);
+        const stock = parseFloat(request.body.stock);
         const idUnidad = request.body.idUnidad ? new ObjectId(request.body.idUnidad) : null;
-        const stockMinimo = parseInt(request.body.stockMinimo);
+        const stockMinimo = parseFloat(request.body.stockMinimo);
         const operacion = request.body.operacion;
         
         if (operacion === 'A') { //alta de ingrediente

@@ -37,7 +37,15 @@ export const formatearFecha = (fecha) => {
     return fecha ? moment(fecha).format('DD/MM/YYYY') : null;
 }
 
+//Dado un número decimal, lo decuelve sólo con 2 dígitos decimales (sin redondearlo)
+//Parámetros:
+    //numero : número decimal a tratar
+//Devuelve:
+    //número sólo con 2 decimales
+export const mostrar2Decimales = (numero) => {
+    return numero.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
 
+}
 
 
 //Devuelve la proporción como un número float o int

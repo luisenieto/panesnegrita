@@ -1,32 +1,27 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Dialog } from '@mui/material';
+import { DialogTitle } from '@mui/material';
+import { DialogContent } from '@mui/material';
+import { DialogContentText } from '@mui/material';
+import { DialogActions } from '@mui/material';
 import { Button } from '@mui/material';
 import { useTheme } from '@emotion/react';
-import { constantes } from '../../auxiliares/auxiliaresPedidos';
-import { useContext } from 'react';
 import { ProveedorContexto } from '../../contexto/proveedor';
+import { useContext } from 'react';
+import { constantes } from '../../auxiliares/auxiliaresPedidos';
 import axios from 'axios';
 
-
-//Componente que muestra el popup donde se confirma la cancelación de un pedido (desde un cliente)
-const Popup = ({ cliente, setCliente, titulo, texto, openPopup, setearOpenPopup, setMensaje }) => {
+//Componente que muestra el popup donde se confirma la cancelación de un pedido
+const Popup = ({titulo, texto, openPopup, setearOpenPopup, setMensaje}) => {
     const tema = useTheme();
     const { pedidoACancelar } = useContext(ProveedorContexto);
 
-    const handleAceptar = async () => {
-
+    const handleAceptar = async () => {        
         const ruta = '/api/pedidos';
         try {
             const respuestaBorrar = await axios.delete(ruta, {data : pedidoACancelar});
-            const dataBorrar = await respuestaBorrar.data;           
+            const dataBorrar = await respuestaBorrar.data;
             if (dataBorrar.mensaje === constantes.PEDIDO_CANCELADO) { //se pudo cancelar el pedido
-                //si se pudo cancelar el pedido, se lo saca del vector de pedidos del cliente
-                let pedidosUpdate = cliente.pedidos;
-                const index = pedidosUpdate.indexOf(pedidoACancelar._id);
-                pedidosUpdate.splice(index, 1);
-                setCliente({
-                    ...cliente, 
-                    pedidos : pedidosUpdate
-                });
+                //ver el tema del refresco
                 setMensaje({
                     gravedad : 'success',
                     titulo : constantes.CANCELAR_PEDIDO,
@@ -43,7 +38,7 @@ const Popup = ({ cliente, setCliente, titulo, texto, openPopup, setearOpenPopup,
                 });
             }
         }
-        catch(error) {        
+        catch(error) {            
             setMensaje({
                 gravedad : 'error',
                 titulo : constantes.CANCELAR_PEDIDO,
@@ -55,12 +50,8 @@ const Popup = ({ cliente, setCliente, titulo, texto, openPopup, setearOpenPopup,
         setearOpenPopup(false);
     }
 
-
     return (
-        <Dialog 
-            open = {openPopup} 
-            onClose = { () => setearOpenPopup(false) }
-        >
+        <Dialog open = {openPopup} onClose = {() => setearOpenPopup(false)}>
             <DialogTitle>{titulo}</DialogTitle>
             <DialogContent>
                 <DialogContentText>

@@ -1,86 +1,152 @@
-import { Button, Box } from "@mui/material";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { Grid, TableContainer, Table, Card, Button } from '@mui/material';
+import { useState, useContext } from 'react';
+import { obtenerPedidos } from '../api/pedidos/bdAuxiliares';
+import CabeceraTabla from '../../componentes/pedidos/cabeceraTabla';
+import CuerpoTabla from '../../componentes/pedidos/cuerpoTabla';
+import PaginacionTabla from '../../componentes/pedidos/paginacionTabla';
+import Popup from '../../componentes/pedidos/popup';
+import { constantes } from '../../auxiliares/auxiliaresPedidos';
+import { constantes as constantesAplicacion } from '../../auxiliares/auxiliaresAplicacion';
+import MensajeInformativo from '../../componentes/comunes/mensajeInformativo';
+import { ProveedorContexto } from '../../contexto/proveedor';
+import { useRouter } from 'next/router';
 
+//Componente que muestra todos los pedidos
 const Pedidos = (props) => {
-    const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
-    //imagenSeleccionada es el archivo (objeto tipo File) de imagen seleccionado
+    const pedidos = props.pedidos;
+    //los _id se guardan como cadena
 
-    const [URLImagen, setURLImagen] = useState(null);
-    //URL del archivo de imagen seleccionado (sirve para mostrarlo)
+    const { setRedirigirA } = useContext(ProveedorContexto); 
+    const router = useRouter(); 
 
-    const [imagen, setImagen] = useState(null);
+    const [orden, setearOrden] = useState('desc');
+    //por defecto, los pedidos se ordenan según la fecha descendentemente
 
-    //cada vez que cambie imagenSeleccionada (objeto del tipo File)
-    //se obtiene la URL del mismo mediante el método createObjectURL
-    // useEffect(() => {
-    //     if (imagenSeleccionada) {
-    //         //setURLImagen(URL.createObjectURL(imagenSeleccionada));
-    //         const fileReader = new FileReader();
-    //         fileReader.onload = function(evento) {
-    //             setImagen(evento.target.result);
-    //         }
-    //         fileReader.readAsDataURL(imagenSeleccionada);
-    //     }
-    // }, [imagenSeleccionada]);
-
-    const handleImage = async (evento) => {
-        const archivo = evento.target.files[0];
-        //como se podrían seleccionar varios archivos, lo datos vienen en un vector
-        //si se quiere uno solo, se toma el primer elemento del vector
-        //Cada elemento del vector es un objeto del tipo File, con claves como name, size, type, lastModified, etc
-        setImagenSeleccionada(archivo);
-
-        const ruta = '/api/pedidos';
-        try {
-            const form = new FormData();
-            form.append('imagen', archivo);
-            const respuesta = await axios.post(ruta, form);
-            const data = await respuesta.data;
-            //console.log(data.mensaje);
-            console.log(data);
-        }
-        catch(error) {
-            //Si está definido error.response es porque se hizo el pedido y el servidor respondió con un estado !== 200
-            //se puede ver error.response.data, error.response.status
-            //Si está definido error.request es porque se hizo el pedido pero no se recibió una respuesta
-            //se puede ver error.request
-            //Y si no, el error puede ser por otra cosa
-            //se puede ver error.message
-            console.log(error.response.data.mensaje || error.message);
-        }
+    //configura el criterio de ordenamiento en asc o desc para ordenar los pedidos
+    const configurarOrdenamiento = () => {
+        setearOrden(orden === 'asc' ? 'desc' : 'asc');
     }
 
-    console.log(imagen);
-    return (
-        
-        //el atributo hidden de input oculta el botón y campo de texto del componente
-        //el atributo accept con el valor 'image/*' permite seleccionar sólo archivos de imágenes
-        //si se quisiera poder seleccionar varios archivos, se puede agregar el atributo multiple
-        //el atributo type con el valor 'file' permite que el componente input sirva para seleccionar archivos
-        //onChange: siempre que cambie el archivo seleccionado se lo guarda en selectedImage        
-        <>
-            <Button variant="contained" component="label">
-                Upload
-                <input hidden accept = 'image/*' multiple type = 'file' onChange = {handleImage} />
-            </Button>
-            {
-                imagen && (
-                    <Box mt={2} textAlign="center">
-                        <img src = {imagen} height = "100px" />
-                    </Box>
-                )                
-            }
-            {/* {
-                URLImagen && imagenSeleccionada && (
-                    <Box mt={2} textAlign="center">
-                        <img src = {URLImagen} alt = {imagenSeleccionada.name} height = "100px"/>
-                    </Box>
-                )
-            } */}
+    const ordenarPor = 'fecha';
+    //Se pueden ordenar los pedidos por fecha y ....
 
+    const [pagina, setearPagina] = useState(0);
+    //para saber en qué página se está (empieza en la 0)
+
+    const [filasPorPagina, setearFilasPorPagina] = useState(10);
+    //por defecto se muestran 10 unidades por página
+
+    const [openPopup, setearOpenPopup] = useState(false);
+    //controla la visibilidad del popup (pregunta si se confirma la cancelación del pedido)
+
+    const [mensaje, setMensaje] = useState(
+        props.mensaje === constantes.PEDIDOS_LEIDOS_CORRECTAMENTE ?
+            {
+                gravedad : 'error',
+                titulo : '',
+                texto : '',
+                mostrar : false
+            }
+        :
+            {
+                gravedad : 'error',
+                titulo : constantes.ERROR,
+                texto : props.mensaje || constantes.ERROR_LEER_PEDIDOS,
+                mostrar : true
+            }
+    );
+    //controla el componente MensajeInformativo
+
+    return (        
+        <>
+            <Card sx = {{ marginTop : 1, width : '100%' }} >
+                <Grid container spacing = {1} >
+                    <Grid item xs = {12}>
+                        {
+                            !mensaje.mostrar ?
+                                <>
+                                    <TableContainer sx = {{ maxHeight: 440 }} > 
+                                        <Table stickyHeader 
+                                            // sx = {{width : 350}} 
+                                            aria-labelledby = 'tituloTabla' 
+                                            size = 'medium'
+                                        >
+                                            <CabeceraTabla
+                                                orden = {orden}
+                                                configurarOrdenamiento = {configurarOrdenamiento}
+                                            />
+                                            <CuerpoTabla 
+                                                ordenarPor = {ordenarPor}
+                                                orden = {orden}                                                
+                                                pagina = {pagina}
+                                                filasPorPagina = {filasPorPagina}
+                                                pedidos = {pedidos}
+                                                setearOpenPopup = {setearOpenPopup}
+                                            />                                
+                                        </Table>
+                                    </TableContainer>
+                                    <PaginacionTabla 
+                                        filasPorPagina = {filasPorPagina}
+                                        setearFilasPorPagina = {setearFilasPorPagina}
+                                        pagina = {pagina}
+                                        setearPagina = {setearPagina}
+                                        cantPedidos = {pedidos.length}
+                                    />
+                                    <Popup 
+                                        titulo = {constantesAplicacion.TITULO_APLICACION}
+                                        texto = {constantes.MENSAJE_CONFIRMAR_CANCELACION}
+                                        openPopup = {openPopup}
+                                        setearOpenPopup = {setearOpenPopup}
+                                        setMensaje = {setMensaje}
+                                    />
+                                </>
+                            :
+                                <MensajeInformativo 
+                                    mensaje = {mensaje}
+                                    setMensaje = {setMensaje}
+                                    ruta = '/pedidos'
+                                />
+                        }
+                    </Grid>
+                </Grid>
+            </Card>
+            <Grid container spacing = {1}>
+                <Grid item xs = {12}>
+                    <Button 
+                        variant = 'contained' 
+                        fullWidth
+                        sx = {{
+                            marginLeft : '0px',
+                            padding : '20px 5px',
+                        }}
+                        onClick = { () => {  
+                            setRedirigirA('pedidos/nuevo');                      
+                            router.push('/pedidos/nuevo');
+                        }}
+                    >
+                        {constantes.NUEVO_PEDIDO}
+                    </Button>
+                </Grid>
+            </Grid>
         </>
     )
+}
+
+export const getServerSideProps = async () => {
+    const resultadoObtenerPedidos = await obtenerPedidos();    
+    return {
+        props : {                
+            pedidos: JSON.parse(JSON.stringify(resultadoObtenerPedidos.pedidos)),
+            mensaje : resultadoObtenerPedidos.mensaje                
+        }
+    }    
+    //getServerSideProps() tiene un problema al serializar el tipo de datos ObjectId de Mongo
+    //Hay un hilo en GitHub al respecto (https://github.com/vercel/next.js/issues/11993)
+    //Para solucionar esto se puede usar stringify() y luego parse()
+    //Esta información la saqué de https://www.mongodb.com/developer/languages/javascript/nextjs-with-mongodb/
+    //Lo que hay que tener en cuenta es que al usar stringify() se convierte a cadena el tipo ObjectId
+    //En memoria, los _id van a estar como cadenas (hay que tener en cuenta esto para las comparaciones por ejemplo)
+    //Luego, para operaciones que interactúen con la BD hay que transformarlo a ObjectId
 }
 
 export default Pedidos;

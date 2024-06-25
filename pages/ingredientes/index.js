@@ -12,6 +12,7 @@ import { ProveedorContexto } from "../../contexto/proveedor";
 import Popup from "../../componentes/ingredientes/popup";
 import MensajeInformativo from '../../componentes/comunes/mensajeInformativo';
 
+//Componente que muestra todos los ingredientes
 const Ingredientes = (props) => {
     const { unidades, setUnidades, setRedirigirA } = useContext(ProveedorContexto); 
 

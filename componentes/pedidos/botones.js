@@ -21,6 +21,7 @@ const Botones = ({ pedido, setMensaje, ruta, operacion }) => {
 
         if (operacion === 'A') {
             try {
+                console.log(pedido);
                 const respuesta = await axios.post(ruta, {...pedido, operacion : 'A' });
                 const data = await respuesta.data;
                 if (data.mensaje === constantes.PEDIDO_CREADO) {                

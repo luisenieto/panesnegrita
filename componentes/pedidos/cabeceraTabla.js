@@ -1,9 +1,9 @@
 import { TableHead, TableRow, TableCell, TableSortLabel, Box } from '@mui/material';
 import { visuallyHidden } from '@mui/utils'; 
 import { useTheme } from '@mui/material';
-import { constantes } from '../../auxiliares/auxiliaresIngredientes';
+import { constantes } from '../../auxiliares/auxiliaresPedidos'; 
 
-//Componente que muestra la cabecera de la tabla de ingredientes
+//Componente que muestra la cabecera de la tabla de pedidos
 const CabeceraTabla = ({orden, configurarOrdenamiento}) => {
     const tema = useTheme();
 
@@ -23,7 +23,7 @@ const CabeceraTabla = ({orden, configurarOrdenamiento}) => {
                 <TableCell 
                     sortDirection = {orden} 
                     sx = {{
-                        maxWidth : 60,
+                        maxWidth : 30,
                         backgroundColor : tema.palette.primary.main,
                         color : tema.palette.primary.contrastText
                     }}
@@ -47,7 +47,7 @@ const CabeceraTabla = ({orden, configurarOrdenamiento}) => {
                         direction = {orden} 
                         onClick = {configurarOrdenamiento}
                     >
-                        {constantes.NOMBRE}
+                        {constantes.FECHA}
                         <Box 
                             component = "span" 
                             sx = {visuallyHidden}
@@ -62,38 +62,40 @@ const CabeceraTabla = ({orden, configurarOrdenamiento}) => {
                     </TableSortLabel>
                 </TableCell>
                 <TableCell sx = {{
-                        maxWidth : 30,
+                        maxWidth : 60,
                         backgroundColor : tema.palette.primary.main,
                         color : tema.palette.primary.contrastText
                     }}
-                    align = 'center'
+                    align = 'left'
                 >
-                    {constantes.STOCK}
+                    {constantes.CLIENTE}
                 </TableCell>                
-                <TableCell sx = {{
-                        maxWidth : 30,
-                        backgroundColor : tema.palette.primary.main,
-                        color : tema.palette.primary.contrastText
-                    }}
-                    align = 'center'
-                >
-                    {constantes.STOCK_MINIMO}
-                </TableCell>
                 <TableCell sx = {{
                         maxWidth : 60,
                         backgroundColor : tema.palette.primary.main,
                         color : tema.palette.primary.contrastText
                     }}
+                    align = 'left'
                 >
-                    {constantes.UNIDAD}
+                    {constantes.PRODUCTO}
+                </TableCell>
+                <TableCell sx = {{
+                        maxWidth : 20,
+                        backgroundColor : tema.palette.primary.main,
+                        color : tema.palette.primary.contrastText
+                    }}
+                    align = 'center'
+                >
+                    {constantes.CANTIDAD}
                 </TableCell>
                 <TableCell sx = {{
                         maxWidth : 30,
                         backgroundColor : tema.palette.primary.main,
                         color : tema.palette.primary.contrastText
                     }}
+                    align = 'center'
                 >
-                    {constantes.ESTADO}
+                    {constantes.IMPORTE}
                 </TableCell>
             </TableRow>
         </TableHead>

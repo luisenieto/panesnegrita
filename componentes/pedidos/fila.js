@@ -4,14 +4,15 @@ import {RiEditLine} from 'react-icons/ri';
 import {GoTrashcan} from 'react-icons/go';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { formatearFecha, moneda } from "../../auxiliares/auxiliares";
 import Etiqueta from "../comunes/etiqueta";
 import { constantes } from "../../auxiliares/auxiliaresIngredientes";
 import { ProveedorContexto } from "../../contexto/proveedor";
 import { mostrar2Decimales } from "../../auxiliares/auxiliares";
 
-const Fila = ({unIngrediente, setearOpenPopup}) => {
+const Fila = ({unPedido, setearOpenPopup}) => {
     const router = useRouter();
-    const { setIngredienteABorrar, setRedirigirA } = useContext(ProveedorContexto); 
+    //const { setIngredienteABorrar, setRedirigirA } = useContext(ProveedorContexto); 
 
     const { data: sesion, status: estaAveriguando } = useSession(); 
     //a data se le cambia el nombre por sesion, y a status por estaAveriguando
@@ -29,14 +30,14 @@ const Fila = ({unIngrediente, setearOpenPopup}) => {
         //no hay necesidad de ver cuanto vale "estaAveriguando" porque ya terminó de averiguar)
         //Si sesion : null y estaAveriguando : "unauthenticated" hay que redirigir al formulario de logueo
 
-        if (sesion) {
-            setIngredienteABorrar(unIngrediente);
-            setearOpenPopup(true);
-        }
-        if (!sesion && estaAveriguando === "unauthenticated") {
-            setRedirigirA('ingredientes'); 
-            router.push('/autenticacion');
-        }        
+        // if (sesion) {
+        //     setIngredienteABorrar(unIngrediente);
+        //     setearOpenPopup(true);
+        // }
+        // if (!sesion && estaAveriguando === "unauthenticated") {
+        //     setRedirigirA('ingredientes'); 
+        //     router.push('/autenticacion');
+        // }        
     }
 
     //permite editar un ingrediente (si se está logueado)
@@ -45,41 +46,14 @@ const Fila = ({unIngrediente, setearOpenPopup}) => {
         //no hay necesidad de ver cuanto vale "estaAveriguando" porque ya terminó de averiguar)
         //Si sesion : null y estaAveriguando : "unauthenticated" hay que redirigir al formulario de logueo
 
-        if (sesion) {
-            router.push(`/ingredientes/modificacion/${unIngrediente._id}`);
-        }
-        if (!sesion && estaAveriguando === "unauthenticated") {
-            setRedirigirA('ingredientes'); 
-            router.push('/autenticacion');
-        }        
+        // if (sesion) {
+        //     router.push(`/ingredientes/modificacion/${unIngrediente._id}`);
+        // }
+        // if (!sesion && estaAveriguando === "unauthenticated") {
+        //     setRedirigirA('ingredientes'); 
+        //     router.push('/autenticacion');
+        // }        
     }
-
-    //Dadas las cantidades de stock y stock mínimo, genera la etiqueta que muestra el estado 
-    //del ingrediente
-    const generarEstado = (stock, stockMinimo) => {
-        if (stock === 0) {
-            return (
-                <Etiqueta variant = "ghost" color = {'error'}>
-                    {constantes.ESTADO_SIN_STOCK}
-                </Etiqueta>
-            )
-        }
-        else if (stock <= stockMinimo) {
-            return (
-                <Etiqueta variant = "ghost" color = {'warning'}>
-                    {constantes.ESTADO_CRITICO}
-                </Etiqueta>
-            ) 
-        }
-        else {
-            return (
-                <Etiqueta variant = "ghost" color = {'success'}>
-                    {constantes.ESTADO_CON_STOCK}
-                </Etiqueta>
-            )
-        }
-    }
-
 
     return (
         <Fragment>
@@ -103,11 +77,11 @@ const Fila = ({unIngrediente, setearOpenPopup}) => {
                         <GoTrashcan />
                     </IconButton>
                 </TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 60}}>{ unIngrediente.nombre }</TableCell>
-                <TableCell align = 'center' sx = {{maxWidth : 30}}>{ mostrar2Decimales(unIngrediente.stock) }</TableCell>
-                <TableCell align = 'center' sx = {{maxWidth : 30}}>{ mostrar2Decimales(unIngrediente.stockMinimo) }</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 60}}>{ unIngrediente.nombreUnidad }</TableCell>
-                <TableCell align = 'left' sx = {{maxWidth : 30}}>{ generarEstado(unIngrediente.stock, unIngrediente.stockMinimo) }</TableCell>
+                <TableCell align = 'left' sx = {{maxWidth : 30}}>{ formatearFecha(unPedido.fecha) }</TableCell>
+                <TableCell align = 'left' sx = {{maxWidth : 60}}>{ `${unPedido.cliente.apellido}, ${unPedido.cliente.nombre}` }</TableCell>
+                <TableCell align = 'left' sx = {{maxWidth : 60}}>{ unPedido.producto.nombre }</TableCell>
+                <TableCell align = 'center' sx = {{maxWidth : 20}}>{ unPedido.cantidad }</TableCell>
+                <TableCell align = 'center' sx = {{maxWidth : 30}}>{ moneda(unPedido.importe) }</TableCell>
             </TableRow>
         </Fragment>
     )

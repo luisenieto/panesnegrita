@@ -1,29 +1,29 @@
 import { TableBody, TableRow, TableCell } from '@mui/material';
 import Fila from './fila';
 
-//Componente que muestra el cuerpo de la tabla de ingredientes
-const CuerpoTabla = ({ordenarPor, orden, pagina, filasPorPagina, ingredientes, setearOpenPopup}) => {        
+//Componente que muestra el cuerpo de la tabla de pedidos
+const CuerpoTabla = ({ordenarPor, orden, pagina, filasPorPagina, pedidos, setearOpenPopup}) => {        
 
     // Para evitar que la última página haga un salto cuando haya filas vacías
     const filasVacias = pagina > 0 
         ? 
-            Math.max(0, (1 + pagina) * filasPorPagina - ingredientes.length) 
+            Math.max(0, (1 + pagina) * filasPorPagina - pedidos.length) 
         : 
             0;
 
-    const comparador = (ingrediente1, ingrediente2) => {
+    const comparador = (pedido1, pedido2) => {
         if (orden === 'asc')
-            return ingrediente1[ordenarPor].localeCompare(ingrediente2[ordenarPor], undefined, { sensitivity: 'base' })
+            return pedido1[ordenarPor].localeCompare(pedido2[ordenarPor], undefined, { sensitivity: 'base' })
         else
-            return - ingrediente1[ordenarPor].localeCompare(ingrediente2[ordenarPor], undefined, { sensitivity: 'base' })
+            return - pedido1[ordenarPor].localeCompare(pedido2[ordenarPor], undefined, { sensitivity: 'base' })
     }  
 
     return (
         <TableBody>
             {
-                ingredientes.slice().sort(comparador).map((ingrediente, i) => (
+                pedidos.slice().sort(comparador).map((pedido, i) => (
                     <Fila 
-                        unIngrediente = {ingrediente}
+                        unPedido = {pedido}
                         key = {i}
                         setearOpenPopup = {setearOpenPopup}
                     />

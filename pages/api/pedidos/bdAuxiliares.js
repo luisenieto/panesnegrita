@@ -8,7 +8,6 @@ import { ObjectId } from 'mongodb';
 
 
 
-
 //*************************** Funciones de ABM y Listado ************************* */
 
 //Agrega el pedido en la colección
@@ -461,6 +460,66 @@ export const modificarEstadoPedido = async (pedido) => {
     return constantesPedidos.PEDIDO_MODIFICADO;
 }
 
+
+//Obtiene todos los pedidos
+//Para obtener los pedidos:
+    //1. Se conecta a la BD
+    //2. Obtiene los pedidos
+    //3. Agrega los datos del cliente y del producto a todos los pedidos
+//Requiere de las funciones auxiliares:
+    //(1) conectarBD()
+//Devuelve: objeto de la forma:
+    //{
+    //    mensaje : constantesConexion.ERROR_CONEXION || constantesPedidos.ERROR_LEER_PEDIDOS || constantesPedidos.PEDIDOS_LEIDOS_CORRECTAMENTE
+    //    pedidos : vector con los pedidos leidos (si hubo error está vacío)
+    //}
+export const obtenerPedidos = async () => {     
+    let resultadoObtenerPedidos = {
+        mensaje : '',
+        pedidos : []
+    }
+
+    //1. Se conecta a la BD
+    const resultadoConectarBD = await conectarBD();
+
+    if (resultadoConectarBD.mensaje !== constantesConexion.CONEXION_EXITOSA)  //no se pudo establecer la conexión
+        return resultadoConectarBD.mensaje;    
+
+    //2. Obtiene los pedidos
+    const bd = resultadoConectarBD.cliente.db();
+    let pedidos;
+    try {
+        pedidos = await bd.collection('pedidos').find().toArray();
+
+        //resultadoObtenerPedidos.pedidos = pedidos;
+        //resultadoConectarBD.cliente.close();            
+        //return resultadoObtenerPedidos;
+    }
+    catch(error) {
+        resultadoConectarBD.cliente.close();
+        return {...resultadoObtenerPedidos, mensaje : constantesPedidos.ERROR_LEER_PEDIDOS};
+    }
+
+    //3. Agrega los datos del cliente y del producto a todos los pedidos
+    let todosLosClientes;
+    let todosLosProductos;
+    try {
+        todosLosClientes = await bd.collection('clientes').find().toArray();
+        todosLosProductos = await bd.collection('productos').find().toArray();   
+
+        pedidos = agregarDatosClienteYProducto(pedidos, todosLosClientes, todosLosProductos);
+        resultadoObtenerPedidos.mensaje = constantesPedidos.PEDIDOS_LEIDOS_CORRECTAMENTE;
+        resultadoObtenerPedidos.pedidos = pedidos;
+        resultadoConectarBD.cliente.close();
+        return resultadoObtenerPedidos;
+    }
+    catch(error) {
+        resultadoConectarBD.cliente.close();
+        return { ...resultadoObtenerPedidos, mensaje : constantesPedidos.ERROR_LEER_CLIENTES_PRODUCTOS };
+    }
+}
+
+    
 //Obtiene el pedido con el _id especificado, o null si no encuentra uno
 //También devuelve la lista de pedidos
 //Todos los pedidos tienen un idProducto
@@ -647,7 +706,56 @@ const actualizarIngredientes = async (cliente, producto, cantidad, operacion) =>
 }
 
 
+//Agrega al vector de pedidos los datos de cada cliente y producto
+//Parámetros:
+    //pedidos: vector con todos los pedidos:
+        //{
+            //_id : xxx,
+            //idCliente : xxx,
+            //idProducto: xxx,
+            //cantidad : xxx,
+            //importe : xxx,
+            //fecha : xxx,
+            //estado : xxx
+        //}
+    //clientes: vector con todos los clientes
+    //productos: vector con todos los productos
+//Devuelve: 
+    //vector con todos los pedidos con el agregado del atributo para el cliente y producto:
+        //{
+            //_id : xxx,
+            //idCliente : xxx,
+            //idProducto: xxx,
+            //cantidad : xxx,
+            //importe : xxx,
+            //fecha : xxx,
+            //estado : xxx
+            //datosCliente : 
+                //{
+                    //_id : xxx,
+                    //  apellido : xxx,
+                    //  nombre : xxx,
+                    //  ...
+                //},
+            //datosProducto :
+                //{
+                    //_id : xxx,
+                    //nombre : xxx,
+                    //...
+                //}
+        //}    
+const agregarDatosClienteYProducto = (pedidos, clientes, productos) => {
+    let pedidosUpdate = [];
 
+    for(let i in pedidos) 
+        pedidosUpdate.push({
+            ...pedidos[i], 
+            cliente : obtenerCliente(pedidos[i].idCliente, clientes),
+            producto : obtenerProducto(pedidos[i].idProducto, productos)
+        });
+    
+    return pedidosUpdate;
+}
 
 //Dado un pedido, agrega al mismo al conjunto de pedidos del cliente
 //Es un método auxiliar llamado por agregarPedido()

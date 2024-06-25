@@ -1,5 +1,5 @@
 import { Grid, TextField } from '@mui/material';
-import { stockOnKeyDown, transformarANumero } from './campoStock';
+import { stockOnKeyDown } from './campoStock';
 
 //Componente que muestra el campo de stock mínimo para crear/modificar un ingrediente
 //El valor mínimo que se puede ingresar es 0
@@ -21,7 +21,7 @@ const CampoStockMinimo = ({leyenda, ingrediente, setIngrediente, mostrar}) => {
                     style : {textAlign : 'center'},
                     onKeyDown : (evento) => {stockOnKeyDown(evento)}
                 }}
-                onChange = { evento => setIngrediente({...ingrediente, stockMinimo : transformarANumero(evento.target.value)}) }
+                onChange = { evento => setIngrediente({...ingrediente, stockMinimo : evento.target.value.trim() !== '' ? parseFloat(evento.target.value) : 0}) }
             />
         </Grid>
     )

@@ -12,6 +12,7 @@ import { moneda } from '../../../../auxiliares/auxiliares';
 import Botones from '../../../../componentes/pedidos/botones';
 import MensajeInformativo from '../../../../componentes/comunes/mensajeInformativo';
 
+//Componente que permite crear un nuevo pedido para un producto
 const NuevoPedido = (props) => {
     const [producto, setProducto] = useState(props.producto); 
     //producto es el producto al que se está agregando un pedido

@@ -55,7 +55,8 @@ const CampoStock = ({leyenda, ingrediente, setIngrediente, mostrar}) => {
                     onKeyDown : (evento) => {stockOnKeyDown(evento)}
                 }}
                 //onChange = { evento => setIngrediente({...ingrediente, stock : evento.target.value.trim() !== '' ? obtenerStockComoNumero(evento.target.value.trim()) : 0}) }
-                onChange = { evento => { setIngrediente({...ingrediente, stock : transformarANumero(evento.target.value)}) } }
+                //onChange = { evento => { setIngrediente({...ingrediente, stock : transformarANumero(evento.target.value)}) } }
+                onChange = { evento => { setIngrediente({...ingrediente, stock : evento.target.value.trim() !== '' ? parseFloat(evento.target.value) : 0}) } }
             />
         </Grid>
     )

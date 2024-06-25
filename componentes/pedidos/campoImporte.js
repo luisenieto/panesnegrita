@@ -1,8 +1,12 @@
 import { Grid, TextField } from '@mui/material';
+import { ProveedorContexto } from '../../contexto/proveedor';
+import { useContext } from 'react';
+import { obtenerPrecio } from '../../auxiliares/auxiliaresProductos';
 
 //Componente que muestra el importe de un determinado pedido
 //El valor mínimo que se puede especificar es 0
 const CampoImporte = ({ leyenda, pedido, setPedido }) => {
+    const { productos } = useContext(ProveedorContexto);
 
     //Se ejecuta cada vez que se presiona una tecla en el campo "Importe"
     const importeOnKeyDown = (evento) => {
@@ -25,14 +29,20 @@ const CampoImporte = ({ leyenda, pedido, setPedido }) => {
                 fullWidth                
                 variant = "outlined"
                 type = 'Number'
-                value = {pedido.importe}
+                //value = {pedido.importe}
+                value = {pedido.idProducto ? obtenerPrecio(pedido.idProducto, productos) * pedido.cantidad : pedido.importe}
                 inputProps = {{
                     //disabled : mostrar,
-                    min : 0,
+                    min : 1,
                     style : {textAlign : 'center'},
                     onKeyDown : (evento) => {importeOnKeyDown(evento)}
                 }}
-                onChange = { evento => { setPedido({...pedido, importe : parseFloat(evento.target.value)}) } }
+                onChange = { evento => { 
+                    console.log(parseFloat(evento.target.value));
+                    console.log(pedido.cantidad);
+                    console.log(parseFloat(evento.target.value) * pedido.cantidad);
+                    setPedido({...pedido, importe : parseFloat(evento.target.value) * pedido.cantidad });
+                } }
             />
         </Grid>
     )

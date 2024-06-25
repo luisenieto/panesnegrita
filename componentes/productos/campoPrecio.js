@@ -30,14 +30,12 @@ const CampoPrecio = ({ leyenda, producto, setProducto, mostrar }) => {
                 type = 'Number'
                 value = {producto.precio}
                 inputProps = {{
+                    min : 1,
                     style : {textAlign : 'center'},
                     disabled : mostrar,
                     onKeyDown : (evento) => {precioOnKeyDown(evento)}
                 }}
-                onChange = { evento => setProducto({
-                    ...producto, 
-                    'precio': parseFloat(evento.target.value)
-                })}
+                onChange = { evento => setProducto( { ...producto, precio: evento.target.value.trim() !== '' ? parseFloat(evento.target.value) : 1 } ) }
                 //onChange = { evento => setProducto({...producto, 'precio': evento.target.value.trim() !== '' ? obtenerPrecioComoNumero(evento.target.value.trim()) : 0}) }
             />
         </Grid>

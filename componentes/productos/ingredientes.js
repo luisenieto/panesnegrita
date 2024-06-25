@@ -125,7 +125,7 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
     //Se ejecuta cuando se modifica la cantidad de un ingrediente
     const cantidadOnChange = (valor, posicion) => {
         const ingredientesUpdate = [...producto.ingredientes];
-        ingredientesUpdate[posicion].cantidad = parseFloat(valor);
+        ingredientesUpdate[posicion].cantidad = valor !== '' ? parseFloat(valor) : 1;
         setProducto({...producto, ingredientes : ingredientesUpdate});        
     }
     
@@ -139,7 +139,7 @@ const Ingredientes = ({ producto, setProducto, operacion }) => {
                                 {...defaultPropsIngredientes}
                                 isOptionEqualToValue = {(option, value) => option.value === value.value}
                                 renderInput = {(params) => <TextField {...params} label = {constantes.INGREDIENTE} />}
-                                getOptionDisabled = { opcion => opcion === yaEstaEsteIngrediente(opcion, producto.ingredientes, ingredientesYProductos) }
+                                getOptionDisabled = { opcion => opcion === yaEstaEsteIngrediente(opcion, producto.ingredientes, ingredientesYProductos) || opcion === producto.nombre }
                                 value = {ingrediente.idIngrediente ? obtenerNombreIngrediente(ingrediente.idIngrediente, ingredientesYProductos) : null}
                                 onChange = {(evento, valor) => autoCompleteIngredienteOnChange(valor, i)}
                             />

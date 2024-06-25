@@ -86,6 +86,21 @@ export const obtenerCadenaProducto = (idProducto, productos) => {
     return null;
 }
 
+//Dado el idProducto, devuelve el precio del mismo
+//Si no hay un producto con el idProducto especificado, devuelve null
+//Parámetros:
+    //idProducto: id del producto a buscar (como String)
+    //productos: vector de productos
+//Devuelve:
+    //precio del producto (si se encuentra el producto), o null
+export const obtenerPrecio = (idProducto, productos) => {
+    for(let i in productos) {
+        if (idProducto === productos[i]._id)
+            return productos[i].precio;
+    }
+    return null;
+}
+
 //Borra la foto elegida del vector
 //Suponer que se selecciona el archivo "1" como imagen para el producto
 //luego el archivo "2", luego el "3", luego el "2" nuevamente y finalmente el "1"

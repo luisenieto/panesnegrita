@@ -1,8 +1,12 @@
 import { Grid, TextField } from '@mui/material';
+import { obtenerPrecio } from '../../auxiliares/auxiliaresProductos';
+import { ProveedorContexto } from '../../contexto/proveedor';
+import { useContext } from 'react';
 
 //Componente que muestra la cantidad de un determinado pedido
 //El valor mínimo que se puede ingresar es 1
-const CampoCantidad = ({ leyenda, producto, pedido, setPedido }) => {
+const CampoCantidad = ({ leyenda, pedido, setPedido }) => {
+    const { productos } = useContext(ProveedorContexto);
 
     //Se ejecuta cada vez que se presiona una tecla en el campo "Cantidad"
     const cantidadOnKeyDown = (evento) => {
@@ -19,7 +23,7 @@ const CampoCantidad = ({ leyenda, producto, pedido, setPedido }) => {
 
     const handleChange = (evento) => {
         let cantidad = parseInt(evento.target.value);
-        setPedido({...pedido, cantidad, importe : cantidad * producto.precio});
+        setPedido({...pedido, cantidad, importe : pedido.idProducto ? cantidad * obtenerPrecio(pedido.idProducto, productos) : cantidad });
     }
 
     return (
